@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ArcticEngine">
+      <UniqueIdentifier>{ff1fddd4-da27-484d-bb33-4004aa809ccb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{c289de6a-193f-4723-9ab6-27a88c4778e8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ArcticEngine\engine\arctic_input.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\arctic_math.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\arctic_platform_windows.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\byte_array.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\easy.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\easy_sound.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\easy_sound_instance.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\easy_sprite.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\easy_sprite_instance.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcticEngine\engine\engine.cpp">
+      <Filter>ArcticEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="EntryPoint.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ArcticEngine\engine\arctic_input.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\arctic_math.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\arctic_platform.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\arctic_platform_def.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\arctic_types.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\bound2f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\bound3f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\byte_array.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\easy.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\easy_sound.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\easy_sound_instance.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\easy_sprite.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\easy_sprite_instance.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\engine.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\frustum3f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\mat22f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\mat33f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\mat44f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\opengl.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\rgb.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\rgba.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\scalar_math.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\vec2f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\vec2si32.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\vec3f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\vec3si32.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\vec4f.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcticEngine\engine\vec4si32.h">
+      <Filter>ArcticEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Base.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ArcticEngine\engine\stb_vorbis.inc">
+      <Filter>ArcticEngine</Filter>
+    </None>
+  </ItemGroup>
+</Project>
