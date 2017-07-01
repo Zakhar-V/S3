@@ -30,7 +30,14 @@
     <ClCompile Include="ArcticEngine\engine\easy_sprite.cpp" />
     <ClCompile Include="ArcticEngine\engine\easy_sprite_instance.cpp" />
     <ClCompile Include="ArcticEngine\engine\engine.cpp" />
+    <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="Base.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Logic.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Render.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
@@ -62,8 +69,14 @@
     <ClInclude Include="ArcticEngine\engine\vec3si32.h" />
     <ClInclude Include="ArcticEngine\engine\vec4f.h" />
     <ClInclude Include="ArcticEngine\engine\vec4si32.h" />
+    <ClInclude Include="Audio.hpp" />
     <ClInclude Include="Base.hpp" />
     <ClInclude Include="Engine.hpp" />
+    <ClInclude Include="Logic.hpp" />
+    <ClInclude Include="Physics.hpp" />
+    <ClInclude Include="Render.hpp" />
+    <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="Time.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ArcticEngine\engine\stb_vorbis.inc" />

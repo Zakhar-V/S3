@@ -45,6 +45,27 @@
     <ClCompile Include="Application.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Base.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArcticEngine\engine\arctic_input.h">
@@ -138,6 +159,24 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Application.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.hpp">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

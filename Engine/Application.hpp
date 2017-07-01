@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.hpp"
+#include "Time.hpp"
 
 //----------------------------------------------------------------------------//
 // Application
@@ -10,20 +11,10 @@ class Application : public Singleton<Application>
 {
 public:
 
-	Application(void) = default;
-	~Application(void) = default;
+	Application(void);
+	~Application(void);
 
-	void MainLoop(void)
-	{
-		_Init();
-		while (!m_requireExit)
-		{
-			_BeginFrame();
-			_Endrame();
-			ShowFrame();
-		}
-		_Destroy();
-	}
+	void MainLoop(void);
 
 protected:
 
@@ -32,7 +23,10 @@ protected:
 	virtual void _Init(void) { }
 	virtual void _Destroy(void) { }
 	virtual void _BeginFrame(void) { }
-	virtual void _Endrame(void) { }
+	virtual void _ProcessFrame(void) { }
+	virtual void _EndFrame(void) { }
+
+	Time m_time;
 };
 
 //----------------------------------------------------------------------------//

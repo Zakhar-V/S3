@@ -1,42 +1,20 @@
-#include "Application.hpp"
-#include "Scene.hpp"
-#include "Render.hpp"
 #include "Physics.hpp"
-#include "Audio.hpp"
-#include "Logic.hpp"
 
 //----------------------------------------------------------------------------//
-// Application
+// PhysicsWorld
 //----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
-Application::Application(void)
+void PhysicsWorld::Register(void)
 {
-	RenderWorld::Register();
-	PhysicsWorld::Register();
-	AudioWorld::Register();
-	LogicSystem::Register();
+	//Object::Register<PhysicsComponent>();
+
+	Object::Register<PhysicsWorld>();
+	AddDefaultSystem(TypeName, PHYSICS_PRIORITY);
 }
 //----------------------------------------------------------------------------//
-Application::~Application(void)
+void PhysicsWorld::_ProcessFrame(void)
 {
-
-}
-//----------------------------------------------------------------------------//
-void Application::MainLoop(void)
-{
-	_Init();
-	while (!m_requireExit)
-	{
-		m_time.Update();
-
-		_BeginFrame();
-		_ProcessFrame();
-		_EndFrame();
-
-		arctic::easy::ShowFrame();
-	}
-	_Destroy();
 }
 //----------------------------------------------------------------------------//
 

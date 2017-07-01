@@ -1,7 +1,13 @@
 #pragma once
 
 #include "Base.hpp"
+#include "Scene.hpp"
+#include "Render.hpp"
+#include "Physics.hpp"
+#include "Audio.hpp"
+#include "Logic.hpp"
 #include "Application.hpp"
+
 
 //Example:
 /*
