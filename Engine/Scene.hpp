@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.hpp"
+#include "Object.hpp"
 #include "Math.hpp"
 
 typedef SharedPtr<class Component> ComponentPtr;

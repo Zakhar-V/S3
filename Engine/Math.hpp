@@ -84,6 +84,146 @@ struct Transform
 	float Scale(void) const;
 	//!
 	const Vector2& Pos(void) const;
+
+	static const Transform Identity;
+};
+
+//----------------------------------------------------------------------------//
+// Rect
+//----------------------------------------------------------------------------//
+
+struct Rect
+{
+	//!
+	Rect() = default;
+	//!
+	Rect(float _left, float _top, float _right, float _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) { }
+
+	//!
+	float Width(void) const { return right - left; }
+	//!
+	float Height(void) const { return bottom - top; }
+	//!
+	const Vector2 Size(void) const { return Vector2(Width(), Height()); }
+	//!
+	Rect& SetSize(const Vector2& _size) { return SetSize(_size.x, _size.y); }
+	//!
+	Rect& SetSize(float _width, float _height) { right = left + _width, bottom = top + _height; return *this; }
+
+	//!
+	float AbsWidth(void) const { return fabsf(right - left); }
+	//!
+	float AbsHeight(void) const { return fabsf(bottom - top); }
+	//!
+	Vector2 AbsSize(void) const { return Vector2(AbsWidth(), AbsHeight()); }
+
+	//!
+	const Vector2& Origin(void) const { return *reinterpret_cast<const Vector2*>(&left); }
+	//!
+	Rect& SetOrigin(const Vector2& _pos) { return SetOrigin(_pos.x, _pos.y); }
+	//!
+	Rect& SetOrigin(float _left, float _top)
+	{
+		Vector2 _size = Size();
+		left = _left, top = _top;
+		SetSize(_size);
+		return *this;
+	}
+
+	//!
+	Rect& FromSizePivot(const Vector2& _size, const Vector2& _pivot)
+	{
+		left = -_pivot.x;
+		right = _size.x - _pivot.x;
+		top = - _pivot.y;
+		bottom = _size.y - _pivot.y;
+		return *this;
+	}
+
+	//!
+	const Vector2& Position(void) const { return *reinterpret_cast<const Vector2*>(&left); }
+	//!
+	Vector2& Position(void) { return *reinterpret_cast<Vector2*>(&left); }
+
+	//!
+	const Vector2& Position2(void) const { return *reinterpret_cast<const Vector2*>(&right); }
+	//!
+	Vector2& Position2(void) { return *reinterpret_cast<Vector2*>(&right); }
+
+	//!
+	Vector2 HalfSize(void) const { return Size() * .5f; }
+	//!
+	Vector2 Center(void) const { return Position() + HalfSize(); }
+
+	//!
+	bool IsValid(void) const { return left <= right && top <= bottom; }
+
+	//!
+	Rect operator + (const Vector2& _rhs) const { return Rect(left + _rhs.x, top + _rhs.y, right + _rhs.x, bottom + _rhs.y); }
+	//!
+	friend Rect operator + (const Vector2& _lhs, const Rect& _rhs) { return _rhs + _lhs; }
+	//!
+	Rect operator - (const Vector2& _rhs) const { return Rect(left - _rhs.x, top - _rhs.y, right - _rhs.x, bottom - _rhs.y); }
+	//!
+	friend Rect operator - (const Vector2& _lhs, const Rect& _rhs) { return _rhs - _lhs; }
+	//!
+	Rect operator * (const Vector2& _scale) const { return Rect(left * _scale.x, top * _scale.y, right * _scale.x, bottom * _scale.y); }
+	//!
+	friend Rect operator * (const Vector2& _lhs, const Rect& _rhs) { return _rhs * _lhs; }
+
+	//!
+	Rect operator * (const Rect& _rhs) { return Rect(left * _rhs.left, top * _rhs.top, right * _rhs.right, bottom * _rhs.bottom); }
+
+	//!
+	bool operator == (const Rect& _rhs) const { return left == _rhs.left &&  top == _rhs.top && right == _rhs.right && bottom == _rhs.bottom; }
+	//!
+	bool operator != (const Rect& _rhs) const { return !(*this == _rhs); }
+
+	float left = 0, top = 0, right = 0, bottom = 0;
+
+	static const Rect Zero;
+	static const Rect Identity;
+};
+
+//----------------------------------------------------------------------------//
+// Line
+//----------------------------------------------------------------------------//
+
+struct Line
+{
+	Vector2 start;
+	Vector2 end;
+};
+
+//----------------------------------------------------------------------------//
+// Ray
+//----------------------------------------------------------------------------//
+
+struct Ray
+{
+	Vector2 origin;
+	Vector2 dir;
+};
+
+//----------------------------------------------------------------------------//
+// Bounds
+//----------------------------------------------------------------------------//
+
+//! OOBB
+struct Bounds
+{
+	Vector2 center;
+	Vector2 extends;
+};
+
+//----------------------------------------------------------------------------//
+// Circle
+//----------------------------------------------------------------------------//
+
+struct Circle
+{
+	Vector2 center;
+	float radius;
 };
 
 //----------------------------------------------------------------------------//
