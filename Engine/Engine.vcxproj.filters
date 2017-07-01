@@ -66,6 +66,9 @@
     <ClCompile Include="Time.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArcticEngine\engine\arctic_input.h">
@@ -177,6 +180,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Time.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.hpp">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,6 +16,16 @@ void Component::Destroy(Component* _component)
 		_component->m_entity->RemoveComponent(_component);
 }
 //----------------------------------------------------------------------------//
+bool Component::IsEnabled(void)
+{
+	return m_enabled && m_entity->IsEnabled();
+}
+//----------------------------------------------------------------------------//
+void Component::Enable(bool _enable)
+{
+	m_enabled = _enable;
+}
+//----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
 // Entity
@@ -93,7 +103,7 @@ void Entity::SetScene(Scene* _scene)
 		Release();
 }
 //----------------------------------------------------------------------------//
-void Entity::SetParent(Entity* _parent)
+void Entity::SetParent(Entity* _parent, bool _keepWorldTransform)
 {
 	if (m_parent == _parent)
 		return;
@@ -107,8 +117,14 @@ void Entity::SetParent(Entity* _parent)
 	if (!m_parent && !m_scene)
 		AddRef();
 
+	Transform _transform = GetTransform();
+
 	if (m_parent)
+	{
 		LL_UNLINK(m_parent->m_child, this, m_prev, m_next);
+	}
+	else if(m_scene)
+		m_scene->_UnlinkRootEntity(this);
 
 	m_parent = _parent;
 
@@ -119,11 +135,27 @@ void Entity::SetParent(Entity* _parent)
 		if (m_parent->m_scene != m_scene)
 			SetScene(m_parent->m_scene);
 	}
+	else if (m_scene)
+		m_scene->_LinkRootEntity(this);
 
-	// TODO: update transform
+	if(_keepWorldTransform)
+		SetTransform(_transform);
+
+	_OnParentEnable(m_parent ? m_parent->IsEnabled() : true);
+	_UpdateDepth();
+
+	for (Component* i = m_component; i; i = i->m_nextComponent)
+		i->OnEntityParentChanged();
 
 	if (!m_parent && !m_scene)
 		Release();
+}
+//----------------------------------------------------------------------------//
+Entity* Entity::AddChild(void)
+{
+	EntityPtr _child = new Entity;
+	_child->SetParent(this, false);
+	return _child;
 }
 //----------------------------------------------------------------------------//
 void Entity::Destroy(Entity* _entity)
@@ -134,6 +166,130 @@ void Entity::Destroy(Entity* _entity)
 		_entity->SetParent(nullptr);
 		_entity->SetScene(nullptr);
 		_entity->Release();
+	}
+}
+//----------------------------------------------------------------------------//
+bool Entity::IsEnabled(void)
+{
+	return m_enabled && m_parentEnabled;
+}
+//----------------------------------------------------------------------------//
+void Entity::Enable(bool _enable)
+{
+	bool _oldState = IsEnabled();
+	m_enabled = _enable;
+	if (IsEnabled() != _oldState)
+	{
+		for (Entity* i = m_child; i; i = i->m_next)
+		{
+			i->_OnParentEnable(IsEnabled());
+		}
+	}
+}
+//----------------------------------------------------------------------------//
+void Entity::_OnParentEnable(bool _enable)
+{
+	bool _oldState = IsEnabled();
+	m_parentEnabled = _enable;
+	if (IsEnabled() != _oldState)
+	{
+		for (Entity* i = m_child; i; i = i->m_next)
+		{
+			i->_OnParentEnable(IsEnabled());
+		}
+	}
+}
+//----------------------------------------------------------------------------//
+void Entity::_UpdateDepth(void)
+{
+	m_depth = m_parent ? (m_parent->m_depth + 1) : 0;
+	for (Entity* i = m_child; i; i = i->m_next)
+		i->_UpdateDepth();
+}
+//----------------------------------------------------------------------------//
+void Entity::Rotate(float _r)
+{
+	m_angle += _r;
+	_InvalidateTransform();
+}
+//----------------------------------------------------------------------------//
+void Entity::SetRotation(float _r)
+{
+	m_angle = _r;
+	_InvalidateTransform();
+}
+//----------------------------------------------------------------------------//
+void Entity::Scale(float _s)
+{
+	m_scale *= _s;
+	_InvalidateTransform();
+}
+//----------------------------------------------------------------------------//
+void Entity::SetScale(float _s)
+{
+	m_scale = _s;
+	_InvalidateTransform();
+}
+//----------------------------------------------------------------------------//
+void Entity::Translate(const Vector2& _t)
+{
+	m_pos += _t;
+	_InvalidateTransform();
+}
+//----------------------------------------------------------------------------//
+void Entity::SetPosition(const Vector2& _t)
+{
+	m_pos = _t;
+	_InvalidateTransform();
+}
+//----------------------------------------------------------------------------//
+const Transform& Entity::GetTransform(void)
+{
+	_UpdateTransform();
+	return m_transform;
+}
+//----------------------------------------------------------------------------//
+void Entity::SetTransform(const Transform& _m)
+{
+	Transform _local = _m;
+	if (m_parent)
+		_local = m_parent->GetTransform().Inverse() * _local;
+
+	m_scale = _local.Scale();
+	m_angle = _local.Angle();
+	m_pos = _local.Pos();
+
+	_InvalidateTransform();
+}
+//----------------------------------------------------------------------------//
+void Entity::_InvalidateTransform(void)
+{
+	if (m_transformUpdated)
+	{
+		m_transformUpdated = false;
+
+		for (Component* i = m_component; i; i = i->m_nextComponent)
+			i->OnEntityTransformChanged();
+
+		for (Entity* i = m_child; i; i = i->m_next)
+			i->_InvalidateTransform();
+	}
+}
+//----------------------------------------------------------------------------//
+void Entity::_UpdateTransform(void)
+{
+	if (!m_transformUpdated)
+	{
+		m_transformUpdated = true;
+
+		Transform _local(m_pos.x, m_pos.y, m_scale, m_angle);
+		if (m_parent)
+			m_transform = m_parent->GetTransform() * _local;
+		else
+			m_transform = _local;
+
+		for (Component* i = m_component; i; i = i->m_nextComponent)
+			i->OnEntityTransformUpdated();
 	}
 }
 //----------------------------------------------------------------------------//

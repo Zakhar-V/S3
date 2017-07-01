@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.hpp"
+#include "Math.hpp"
 
 typedef SharedPtr<class Component> ComponentPtr;
 typedef SharedPtr<class Entity> EntityPtr;
@@ -39,12 +40,27 @@ public:
 	//!
 	static void Destroy(Component* _component);
 
+	//!
+	bool IsEnabled(void);
+	//!
+	void Enable(bool _enable);
+
+	//!
+	virtual void OnEntityTransformChanged(void) { }
+	//!
+	virtual void OnEntityTransformUpdated(void) { }
+	//!
+	virtual void OnEntityParentChanged(void) { }
+
+
 protected:
 	friend class Entity;
 
 	Entity* m_entity = nullptr;
 	Component* m_prevComponent = nullptr;
 	Component* m_nextComponent = nullptr;
+
+	bool m_enabled = true;
 };
 
 //----------------------------------------------------------------------------//
@@ -78,15 +94,54 @@ public:
 	//!
 	Entity* GetParent(void) { return m_parent; }
 	//!
-	void SetParent(Entity* _parent);
+	void SetParent(Entity* _parent, bool _keepWorldTransform = true);
 	//!
 	Entity* GetNextEntity(void) { return m_next; }
+	//!
+	Entity* GetChild(void) { return m_child; }
+	//!
+	Entity* AddChild(void);
 
 	//!
 	static void Destroy(Entity* _entity);
 
+	//!
+	bool IsEnabled(void);
+	//!
+	void Enable(bool _enable);
+
+	//!
+	int GetDepth(void) { return m_depth; }
+
+
+	//! Add local rotation
+	void Rotate(float _r);
+	//! Set local rotation
+	void SetRotation(float _r);
+	//! Add local scale
+	void Scale(float _s);
+	//! Set local scale
+	void SetScale(float _s);
+	//! Add local position
+	void Translate(const Vector2& _t);
+	//! Set local position
+	void SetPosition(const Vector2& _t);
+	//! Get world transform
+	const Transform& GetTransform(void);
+	//! Set world transform
+	void SetTransform(const Transform& _m);
+
 protected:
 	friend class Scene;
+
+	//!
+	void _OnParentEnable(bool _enable);
+	//!
+	void _UpdateDepth(void);
+	//!
+	void _InvalidateTransform(void);
+	//!
+	void _UpdateTransform(void);
 
 	Scene* m_scene = nullptr;
 
@@ -97,7 +152,16 @@ protected:
 	Entity* m_next = nullptr;
 	Entity* m_child = nullptr;
 
-	//TODO: transform
+	bool m_enabled = true;
+	bool m_parentEnabled = true;
+
+	int m_depth = 0;
+
+	bool m_transformUpdated = true;
+	float m_scale = 1; //!< local scale
+	float m_angle = 0; //!< local rotation
+	Vector2 m_pos = { 0, 0 }; //!< local position
+	Transform m_transform; //!< world transform
 };
 
 //----------------------------------------------------------------------------//
