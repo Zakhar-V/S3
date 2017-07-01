@@ -72,6 +72,9 @@
     <ClCompile Include="Object.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Json.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArcticEngine\engine\arctic_input.h">
@@ -189,6 +192,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Object.hpp">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Json.hpp">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

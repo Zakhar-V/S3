@@ -118,6 +118,11 @@ protected:
 		_test->SetPosition({ 400, 400 });
 		_test->Rotate(90 * Deg2Rad);
 		_test->Scale(2);
+
+
+		Json _js;
+		_js.Load("Data/test_in.json");
+		_js.Save("Data/test_out.json");
 	}
 	//!
 	void _Destroy(void) override

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.hpp"
+#include "Json.hpp"
 #include "Math.hpp"
 #include "Object.hpp"
 #include "Scene.hpp"
