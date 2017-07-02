@@ -263,9 +263,9 @@ public:
 	//!
 	ConstIterator Begin(void) const { return Container().begin(); }
 	//!
-	Iterator End(void) { return Container().begin(); }
+	Iterator End(void) { return Container().end(); }
 	//!
-	ConstIterator End(void) const { return Container().begin(); }
+	ConstIterator End(void) const { return Container().end(); }
 
 	//!
 	bool Parse(const char* _str, String* _error = nullptr);
