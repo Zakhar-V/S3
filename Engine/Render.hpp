@@ -6,6 +6,14 @@
 typedef SharedPtr<class Image> ImagePtr;
 typedef SharedPtr<class Sprite> SpritePtr;
 
+enum class AnimMode
+{
+	Forward,
+	Backward,
+	Loop,
+	PingPong,
+};
+
 //----------------------------------------------------------------------------//
 // Image
 //----------------------------------------------------------------------------//
@@ -21,6 +29,9 @@ public:
 	Image(void);
 
 	//!
+	Data& GetData(void) { return m_data; }
+
+	//!
 	void Load(const char* _filename) override;
 
 protected:
@@ -31,36 +42,46 @@ protected:
 // Sprite
 //----------------------------------------------------------------------------//
 
-class Sprite : public Object
+class Sprite : public Resource
 {
 public:
 	RTTI("Sprite");
-	
-	struct Frame
-	{
-		String name;
-		uint image;
-		Rect rect;
-	};
 
+	struct Animation
+	{
+		uint start = 0;
+		uint count = 0;
+		float fps = 10;
+		AnimMode mode = AnimMode::Forward;
+	};
+	
 	//!
 	Sprite(void);
 	//!
 	~Sprite(void);
 
 	//!
-	void SetFramesCount(uint _count);
+	Array<ImagePtr>& Images(void) { return m_images; }
 	//!
-	uint GetFramesCount(void) { return (uint)m_frames.size(); }
+	Image* GetImageByIndex(uint _index) { return m_images[_index]; }
+
 	//!
-	Frame& GetFrame(uint _index) { return m_frames[_index]; }
+	HashMap<String, uint>& Aliases(void) { return m_aliases; }
+	//!
+	Image* GetImageByName(const String& _name);
+
+	//!
+	HashMap<String, Animation>& Animations(void) { return m_animations; }
+	//!
+	Animation* GetAnimation(const String& _name);
 
 	//!
 	void Load(const char* _filename) override;
 
 protected:
 	Array<ImagePtr> m_images;
-	Array<Frame> m_frames;
+	HashMap<String, uint> m_aliases;
+	HashMap<String, Animation> m_animations;
 };
 
 //----------------------------------------------------------------------------//
@@ -74,6 +95,9 @@ public:
 
 	Family GetFamily(void) override final { return Family::Render; }
 
+	//!
+	virtual void Update(void) { }
+	//!
 	virtual void Draw(const Vector2& _camera) { }
 
 protected:
@@ -92,9 +116,28 @@ class SpriteRenderer : public RenderComponent
 public:
 	RTTI("SpriteRenderer");
 
-	arctic::easy::Sprite m_data; // temp
+	//!
+	void SetSprite(Sprite* _sprite);
+	//!
+	void SetSprite(const String& _name);
 
+	//!
+	void Play(const String& _name);
+
+	//!
+	void Update(void) override;
+	//!
 	void Draw(const Vector2& _camera) override;
+
+protected:
+
+	SpritePtr m_sprite;
+	Sprite::Animation m_anim;
+	uint m_currentFrame = 0;
+	float m_animTime = 0;
+
+	float m_animSpeed = 1;
+	bool m_play = false;
 };
 
 //----------------------------------------------------------------------------//

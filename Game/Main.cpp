@@ -52,32 +52,36 @@ protected:
 
 		Object::Register<LifeTime>();
 
+
 		m_currentScene = new Scene;
 
 		EntityPtr _test = new Entity;
 		_test->SetScene(m_currentScene);
 
 		SpriteRenderer* _sp = _test->AddComponent<SpriteRenderer>();
-		_sp->m_data.Load("Data/test.tga");
+		_sp->SetSprite("Sprites/Ninja");
+		_sp->Play("Run");
+
+		_test->Scale(.5f);
+ 
+		//_test->SetPosition({ 400, 400 });
+		//_test->Rotate(90 * Deg2Rad);
+		//_test->Scale(2);
 
 
 		Entity* _child = _test->AddChild();
 		SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
-		_sp2->m_data = _sp->m_data;
-		_child->Rotate(-90 * Deg2Rad);
+		_sp2->SetSprite("Sprites/Ninja");
+		_sp2->Play("Idle");
 		_child->Scale(.5f);
 
 		LifeTime* _lf = _child->AddComponent<LifeTime>();
 		_lf->maxLifeTime = 5;
 
-		_test->SetPosition({ 400, 400 });
-		_test->Rotate(90 * Deg2Rad);
-		_test->Scale(2);
 
-
-		Json _js;
+		/*Json _js;
 		_js.Load("Data/test_in.json");
-		_js.Save("Data/test_out.json");
+		_js.Save("Data/test_out.json");	*/
 	}
 	//!
 	void _Destroy(void) override
