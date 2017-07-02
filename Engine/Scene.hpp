@@ -2,6 +2,7 @@
 
 #include "Object.hpp"
 #include "Math.hpp"
+#include "Json.hpp"
 
 typedef SharedPtr<class Component> ComponentPtr;
 typedef SharedPtr<class Entity> EntityPtr;

@@ -1,6 +1,62 @@
 #include "Render.hpp"
 
 //----------------------------------------------------------------------------//
+// Image
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+Image::Image(void)
+{
+	m_data.SetPivot(arctic::Vec2Si32(0, 0));
+}
+//----------------------------------------------------------------------------//
+void Image::Load(const char* _filename)
+{
+	m_data.Load(gResources->MakePath(_filename, "tga"));
+}
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+// Sprite
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+Sprite::Sprite(void)
+{
+}
+//----------------------------------------------------------------------------//
+Sprite::~Sprite(void)
+{
+}
+//----------------------------------------------------------------------------//
+void Sprite::SetFramesCount(uint _count)
+{
+	m_frames.resize(_count);
+}
+//----------------------------------------------------------------------------//
+void Sprite::Load(const char* _filename)
+{
+	Json _desc;
+	_desc.Load(gResources->MakePath(_filename, "json").c_str());
+	
+	// images
+	{
+		m_images.clear();
+
+		const Json& _images = _desc["Images"];
+		for (uint i = 0; i < _images.Size(); ++i)
+			m_images.push_back(gResources->GetResource<Image>(_images[i]));
+	}
+
+	// frames
+	{
+		//String type = _desc[]
+	}
+
+}
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
 // SpriteRenderer
 //----------------------------------------------------------------------------//
 
@@ -21,9 +77,14 @@ void SpriteRenderer::Draw(const Vector2& _camera)
 //----------------------------------------------------------------------------//
 void RenderWorld::Register(void)
 {
+	// resources
+	Object::Register<Image>();
+
+	// componenets
 	//Object::Register<RenderComponent>();
 	Object::Register<SpriteRenderer>();
 
+	// system
 	Object::Register<RenderWorld>();
 	AddDefaultSystem(TypeName, RENDER_PRIORITY);
 }

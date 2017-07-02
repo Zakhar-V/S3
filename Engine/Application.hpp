@@ -2,6 +2,7 @@
 
 #include "Base.hpp"
 #include "Time.hpp"
+#include "Resource.hpp"
 
 //----------------------------------------------------------------------------//
 // Application
@@ -27,6 +28,7 @@ protected:
 	virtual void _EndFrame(void) { }
 
 	Time m_time;
+	ResourceCache m_resources;
 };
 
 //----------------------------------------------------------------------------//

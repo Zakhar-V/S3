@@ -1,12 +1,67 @@
 #pragma once
 
 #include "Scene.hpp"
+#include "Resource.hpp"
+
+typedef SharedPtr<class Image> ImagePtr;
+typedef SharedPtr<class Sprite> SpritePtr;
 
 //----------------------------------------------------------------------------//
-// 
+// Image
 //----------------------------------------------------------------------------//
 
+class Image : public Resource
+{
+public:
+	RTTI("Image");
 
+	typedef arctic::easy::Sprite Data;
+
+	//!
+	Image(void);
+
+	//!
+	void Load(const char* _filename) override;
+
+protected:
+	Data m_data;
+};
+
+//----------------------------------------------------------------------------//
+// Sprite
+//----------------------------------------------------------------------------//
+
+class Sprite : public Object
+{
+public:
+	RTTI("Sprite");
+	
+	struct Frame
+	{
+		String name;
+		uint image;
+		Rect rect;
+	};
+
+	//!
+	Sprite(void);
+	//!
+	~Sprite(void);
+
+	//!
+	void SetFramesCount(uint _count);
+	//!
+	uint GetFramesCount(void) { return (uint)m_frames.size(); }
+	//!
+	Frame& GetFrame(uint _index) { return m_frames[_index]; }
+
+	//!
+	void Load(const char* _filename) override;
+
+protected:
+	Array<ImagePtr> m_images;
+	Array<Frame> m_frames;
+};
 
 //----------------------------------------------------------------------------//
 // RenderComponent

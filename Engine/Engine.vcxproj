@@ -39,6 +39,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
@@ -81,6 +82,7 @@
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Physics.hpp" />
     <ClInclude Include="Render.hpp" />
+    <ClInclude Include="Resource.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Time.hpp" />
   </ItemGroup>

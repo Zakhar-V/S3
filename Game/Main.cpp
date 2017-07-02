@@ -15,53 +15,6 @@ struct PlayerState : public Singleton<PlayerState>
 // 
 //----------------------------------------------------------------------------//
 
-struct IntRect
-{
-	int x1, y1, x2, y2;
-};
-typedef arctic::Vec2Si32 IntVector2;
-
-class Sprite : public RefCounted
-{
-public:
-
-	struct Frame
-	{
-		String name;
-		arctic::easy::Sprite sprite;
-		IntRect rect;
-	};
-
-	void SetFramesCount(uint _count)
-	{
-		m_frames.resize(_count);
-	}
-
-	uint GetFramesCount(void)
-	{
-		return (uint)m_frames.size();
-	}
-
-	Frame& GetFrame(uint _index)
-	{
-		return m_frames[_index];
-	}
-
-	void Draw(uint _frame, const IntVector2& _pos, const IntVector2& _camera, float _zoom = 1, float _angle = 0)
-	{
-
-	}
-
-
-protected:
-	IntVector2 m_size;
-	Array<Frame> m_frames;
-};
-
-//----------------------------------------------------------------------------//
-// 
-//----------------------------------------------------------------------------//
-
 class LifeTime : public LogicComponent
 {
 public:
@@ -94,6 +47,8 @@ protected:
 	void _Init(void) override
 	{  
 		LOG("Initialize...");
+
+		gResources->SetDataPath("Data/");
 
 		Object::Register<LifeTime>();
 
