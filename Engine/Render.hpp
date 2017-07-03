@@ -8,8 +8,8 @@ typedef SharedPtr<class Sprite> SpritePtr;
 
 enum class AnimMode
 {
-	Forward,
-	Backward,
+	Default,
+	Once,
 	Loop,
 	PingPong,
 };
@@ -50,9 +50,9 @@ public:
 	struct Animation
 	{
 		uint start = 0;
-		uint count = 0;
+		uint end = 0;
 		float fps = 10;
-		AnimMode mode = AnimMode::Forward;
+		AnimMode mode = AnimMode::Once;
 	};
 	
 	//!
@@ -122,7 +122,7 @@ public:
 	void SetSprite(const String& _name);
 
 	//!
-	void Play(const String& _name);
+	void Play(const String& _name, AnimMode _mode = AnimMode::Default);
 
 	//!
 	void Update(void) override;

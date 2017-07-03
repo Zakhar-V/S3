@@ -95,20 +95,18 @@ void Sprite::Load(const char* _filename)
 		{
 			Animation _anim;
 			_anim.start = i->second["Start"];
-			_anim.count = i->second["Count"];
+			_anim.end = i->second["End"];
 			_anim.fps = i->second["FrameRate"];
 			
 			String _modeStr = i->second["Mode"];
-			if (_modeStr == "Backward")
-				_anim.mode = AnimMode::Backward;
-			else if (_modeStr == "Loop")
+			if (_modeStr == "Loop")
 				_anim.mode = AnimMode::Loop;
 			else if (_modeStr == "PingPong")
 				_anim.mode = AnimMode::PingPong;
-			else //if (_modeStr == "Forward")
-				_anim.mode = AnimMode::Forward;
+			else //if (_modeStr == "Default" || _modeStr == "Once")
+				_anim.mode = AnimMode::Once;
 
-			if(_anim.start + _anim.count > m_images.size())
+			if(_anim.start > m_images.size() || _anim.end > m_images.size())
 			{
 				LOG("Error: Wrong animation \"%s\"", i->first.c_str());
 			}
@@ -138,13 +136,16 @@ void SpriteRenderer::SetSprite(const String& _name)
 	SetSprite(gResources->GetResource<Sprite>(_name));
 }
 //----------------------------------------------------------------------------//
-void SpriteRenderer::Play(const String& _name)
+void SpriteRenderer::Play(const String& _name, AnimMode _mode)
 {
 	Sprite::Animation* _anim = m_sprite ? m_sprite->GetAnimation(_name) : nullptr;
 	if (_anim)
 	{
 		m_anim = *_anim;
 		m_play = true;
+
+		if (_mode != AnimMode::Default)
+			m_anim.mode = _mode;
 	}
 }
 //----------------------------------------------------------------------------//
@@ -153,9 +154,43 @@ void SpriteRenderer::Update(void)
 	if (m_play)
 	{
 		m_animTime += gTime->Delta() * m_animSpeed;
-		m_currentFrame = m_anim.start + (uint)(m_anim.fps * m_animTime) % m_anim.count;
-		
-		//TODO: apply mode
+		//int _frame = (int)(m_anim.fps * m_animTime);
+		uint _count = Max(m_anim.start, m_anim.end) - Min(m_anim.start, m_anim.end);
+		float _time = m_animTime * (m_anim.fps / _count);
+
+		switch (m_anim.mode)
+		{
+
+		case AnimMode::PingPong:
+		{
+			_time -= floorf(_time);
+			if ((int)(_time) & 0x1)
+				_time = 1 - _time;
+
+		} break;
+
+		case AnimMode::Loop:
+		{
+			_time -= floorf(_time);
+
+		} break;
+
+		default:
+		case AnimMode::Default:
+		case AnimMode::Once:
+		{
+			if (_time >= 1)
+			{
+				m_play = false;
+				_time = 0;
+			}
+		} break;
+		}
+
+		printf("%d %d %f\n", m_anim.start, m_anim.end, _time);
+		m_currentFrame = (int)Mix((float)m_anim.start, (float)m_anim.end, _time);
+
+		printf("%d\n", m_currentFrame);
 	}
 }
 //----------------------------------------------------------------------------//

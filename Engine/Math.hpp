@@ -10,6 +10,22 @@
 const float Deg2Rad = 0.0174533f;
 const float Rad2Deg = 57.29580406904963f;
 
+//!
+template <typename T> const T& Min(const T& _a, const T& _b) { return _a < _b ? _a : _b; }
+//!
+template <typename T> const T& Min(const T& _a, const T& _b, const T& _c) { return _a < _b ? (_a < _c ? _a : _c) : (_b < _c ? _b : _c); }
+//!
+template <typename T> const T& Max(const T& _a, const T& _b) { return _a > _b ? _a : _b; }
+//!
+template <typename T> const T& Max(const T& _a, const T& _b, const T& _c) { return _a > _b ? (_a > _c ? _a : _c) : (_b > _c ? _b : _c); }
+//!
+template <typename T> const T Clamp(T _x, T _l, T _u) { return _x > _l ? (_x < _u ? _x : _u) : _l; }
+//!
+template <typename T> const T Clamp01(T _x) { return Clamp<T>(_x, (T)0, (T)1); }
+//!
+template <typename T> T Mix(const T& _a, const T& _b, float _t) { return _a + (_b - _a) * _t; }
+
+
 //----------------------------------------------------------------------------//
 // Vector2
 //----------------------------------------------------------------------------//

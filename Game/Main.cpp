@@ -60,7 +60,7 @@ protected:
 
 		SpriteRenderer* _sp = _test->AddComponent<SpriteRenderer>();
 		_sp->SetSprite("Sprites/Test");
-		_sp->Play("Run");
+		_sp->Play("Run", AnimMode::PingPong);
 
 		_test->Scale(5);
  
@@ -72,7 +72,7 @@ protected:
 		Entity* _child = _test->AddChild();
 		SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
 		_sp2->SetSprite("Sprites/Test");
-		_sp2->Play("Attack");
+		_sp2->Play("Idle");
 		_child->Scale(.5f);
 		_child->Translate({ 50, 0 });
 

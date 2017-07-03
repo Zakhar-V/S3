@@ -76,21 +76,21 @@
   "Animations": {
     "Idle": {
       "Start": 0,
-      "Count": 5,
-      "FrameRate": 10,
+      "End": 4,
+      "FrameRate": 5,
       "Mode": "Loop"
     },
     "Run": {
       "Start": 5,
-      "Count": 7,
-      "FrameRate": 10,
+      "End": 12,
+      "FrameRate": 12,
       "Mode": "Loop"
     },
     "Attack": {
       "Start": 13,
-      "Count": 3,
-      "FrameRate": 10,
-      "Mode": "Forward"
+      "End": 16,
+      "FrameRate": 8,
+      "Mode": "Once"
     }
   }
 
