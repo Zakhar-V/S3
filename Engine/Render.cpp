@@ -162,9 +162,9 @@ void SpriteRenderer::Update(void)
 
 		case AnimMode::PingPong:
 		{
-_time -= floorf(_time);
-if ((int)(_time) & 0x1)
-_time = 1 - _time;
+			_time -= floorf(_time);
+			if ((int)(_time) & 0x1)
+				_time = 1 - _time;
 
 		} break;
 
@@ -181,7 +181,7 @@ _time = 1 - _time;
 			if (_time >= 1)
 			{
 				m_play = false;
-				_time = 0;
+				_time = 1;
 			}
 		} break;
 		}
