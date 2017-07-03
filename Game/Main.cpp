@@ -59,10 +59,10 @@ protected:
 		_test->SetScene(m_currentScene);
 
 		SpriteRenderer* _sp = _test->AddComponent<SpriteRenderer>();
-		_sp->SetSprite("Sprites/Ninja");
+		_sp->SetSprite("Sprites/Test");
 		_sp->Play("Run");
 
-		_test->Scale(.5f);
+		_test->Scale(5);
  
 		//_test->SetPosition({ 400, 400 });
 		//_test->Rotate(90 * Deg2Rad);
@@ -71,9 +71,10 @@ protected:
 
 		Entity* _child = _test->AddChild();
 		SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
-		_sp2->SetSprite("Sprites/Ninja");
-		_sp2->Play("Idle");
+		_sp2->SetSprite("Sprites/Test");
+		_sp2->Play("Attack");
 		_child->Scale(.5f);
+		_child->Translate({ 50, 0 });
 
 		LifeTime* _lf = _child->AddComponent<LifeTime>();
 		_lf->maxLifeTime = 5;

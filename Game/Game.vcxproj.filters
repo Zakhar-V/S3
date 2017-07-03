@@ -17,7 +17,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\Sprites\Ninja.json">
+    <None Include="Data\Sprites\Test.json">
       <Filter>Data\Sprites</Filter>
     </None>
   </ItemGroup>

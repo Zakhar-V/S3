@@ -1,0 +1,97 @@
+{
+  "Pivot": [0, 0],
+
+  "Images": [
+    "Sprites/Test/000",
+    "Sprites/Test/001",
+    "Sprites/Test/002",
+    "Sprites/Test/003",
+    "Sprites/Test/004",
+    "Sprites/Test/005",
+    "Sprites/Test/006",
+    "Sprites/Test/007",
+    "Sprites/Test/008",
+    "Sprites/Test/009",
+    "Sprites/Test/010",
+    "Sprites/Test/011",
+    "Sprites/Test/012",
+    "Sprites/Test/013",
+    "Sprites/Test/014",
+    "Sprites/Test/015",
+    "Sprites/Test/016",
+    "Sprites/Test/017",
+    "Sprites/Test/018",
+    "Sprites/Test/019",
+    "Sprites/Test/020",
+    "Sprites/Test/021",
+    "Sprites/Test/022",
+    "Sprites/Test/023",
+    "Sprites/Test/024",
+    "Sprites/Test/025",
+    "Sprites/Test/026",
+    "Sprites/Test/027",
+    "Sprites/Test/028",
+    "Sprites/Test/029",
+    "Sprites/Test/030",
+    "Sprites/Test/031",
+    "Sprites/Test/032",
+    "Sprites/Test/033",
+    "Sprites/Test/034",
+    "Sprites/Test/035",
+    "Sprites/Test/036",
+    "Sprites/Test/037",
+    "Sprites/Test/038",
+    "Sprites/Test/039",
+    "Sprites/Test/040",
+    "Sprites/Test/041",
+    "Sprites/Test/042",
+    "Sprites/Test/043",
+    "Sprites/Test/044",
+    "Sprites/Test/045",
+    "Sprites/Test/046",
+    "Sprites/Test/047",
+    "Sprites/Test/048",
+    "Sprites/Test/049",
+    "Sprites/Test/050",
+    "Sprites/Test/051",
+    "Sprites/Test/052",
+    "Sprites/Test/053",
+    "Sprites/Test/054",
+    "Sprites/Test/055",
+    "Sprites/Test/056",
+    "Sprites/Test/057",
+    "Sprites/Test/058",
+    "Sprites/Test/059",
+    "Sprites/Test/060",
+    "Sprites/Test/061",
+    "Sprites/Test/062",
+    "Sprites/Test/063",
+    "Sprites/Test/064"
+  ],
+
+  "Aliases": {
+    "idle": 64
+  },
+
+  "Animations": {
+    "Idle": {
+      "Start": 0,
+      "Count": 5,
+      "FrameRate": 10,
+      "Mode": "Loop"
+    },
+    "Run": {
+      "Start": 5,
+      "Count": 7,
+      "FrameRate": 10,
+      "Mode": "Loop"
+    },
+    "Attack": {
+      "Start": 13,
+      "Count": 3,
+      "FrameRate": 10,
+      "Mode": "Forward"
+    }
+  }
+
+}
