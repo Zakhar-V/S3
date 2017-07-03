@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.hpp"
+#include "System.hpp"
 
 typedef SharedPtr<class Resource> ResourcePtr;
 #define gResources ResourceCache::Instance
@@ -32,13 +33,16 @@ protected:
 //----------------------------------------------------------------------------//
 
 //!
-class ResourceCache : public Singleton<ResourceCache>
+class ResourceCache : public Module<ResourceCache>
 {
 public:
 	//!
 	ResourceCache(void);
 	//!
 	~ResourceCache(void);
+
+	//!
+	bool OnEvent(int _type, void* _arg) override;
 
 	//!
 	void SetDataPath(const String& _dir);

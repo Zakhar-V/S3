@@ -48,7 +48,7 @@ void LogicSystem::_RemoveComponent(Component* _component)
 	}
 }
 //----------------------------------------------------------------------------//
-void LogicSystem::_ProcessFrame(void)
+void LogicSystem::_Update(void)
 {
 	for (LogicComponent* i = m_first; i;)
 	{

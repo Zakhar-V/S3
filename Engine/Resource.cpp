@@ -14,6 +14,23 @@ ResourceCache::~ResourceCache(void)
 	m_resources.clear();
 }
 //----------------------------------------------------------------------------//
+bool ResourceCache::OnEvent(int _type, void* _arg)
+{
+	switch (_type)
+	{
+	case SystemEvent::Startup:
+	{
+
+	} break;
+	case SystemEvent::Shutdown:
+	{
+
+	} break;
+	}
+
+	return false;
+}
+//----------------------------------------------------------------------------//
 void ResourceCache::SetDataPath(const String& _dir)
 {
 	m_dataPath = _dir;

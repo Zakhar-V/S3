@@ -13,7 +13,11 @@ void AudioWorld::Register(void)
 	AddDefaultSystem(TypeName, AUDIO_PRIORITY);
 }
 //----------------------------------------------------------------------------//
-void AudioWorld::_ProcessFrame(void)
+void AudioWorld::_Update(void)
+{
+}
+//----------------------------------------------------------------------------//
+void AudioWorld::_PostUpdate(void)
 {
 }
 //----------------------------------------------------------------------------//

@@ -20,23 +20,23 @@ Application::Application(void)
 //----------------------------------------------------------------------------//
 Application::~Application(void)
 {
-
 }
 //----------------------------------------------------------------------------//
 void Application::MainLoop(void)
 {
-	_Init();
+	SendEvent(SystemEvent::Startup);
 	while (!m_requireExit)
 	{
-		m_time.Update();
-
-		_BeginFrame();
-		_ProcessFrame();
-		_EndFrame();
+		SendEvent(SystemEvent::BeginFrame);
+		SendEvent(SystemEvent::Update);
+		SendEvent(SystemEvent::PostUpdate);
+		SendEvent(SystemEvent::Render);
+		SendEvent(SystemEvent::PostRender);
+		SendEvent(SystemEvent::EndFrame);
 
 		arctic::easy::ShowFrame();
 	}
-	_Destroy();
+	SendEvent(SystemEvent::Shutdown);
 }
 //----------------------------------------------------------------------------//
 

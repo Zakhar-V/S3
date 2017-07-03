@@ -40,13 +40,38 @@ class Game : public Application
 {
 public:
 
+	bool OnEvent(int _type, void* _arg) override
+	{
+		switch (_type)
+		{
+		case SystemEvent::Startup:
+			_Startup();
+			break;
+		case SystemEvent::Shutdown:
+			_Shutdown();
+			break;
+		case SystemEvent::BeginFrame:
+			_BeginFrame();
+			break;
+		case SystemEvent::Update:
+			_Update();
+			break;
+		case SystemEvent::Render:
+			_Render();
+			break;
+		case SystemEvent::EndFrame:
+			_EndFrame();
+			break;
+		}
+		return false;
+	}
 
 protected:
 
 	//!
-	void _Init(void) override
+	void _Startup(void)
 	{  
-		LOG("Initialize...");
+		LOG("Startup...");
 
 		gResources->SetDataPath("Data/");
 
@@ -57,50 +82,46 @@ protected:
 
 		EntityPtr _test = new Entity;
 		_test->SetScene(m_currentScene);
+		_test->Scale(5);
 
 		SpriteRenderer* _sp = _test->AddComponent<SpriteRenderer>();
 		_sp->SetSprite("Sprites/Test");
 		_sp->Play("Run", AnimMode::PingPong);
 
-		_test->Scale(5);
  
-		//_test->SetPosition({ 400, 400 });
-		//_test->Rotate(90 * Deg2Rad);
-		//_test->Scale(2);
-
-
 		Entity* _child = _test->AddChild();
-		SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
-		_sp2->SetSprite("Sprites/Test");
-		_sp2->Play("Idle");
 		_child->Scale(.5f);
 		_child->Translate({ 50, 0 });
 
+		SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
+		_sp2->SetSprite("Sprites/Test");
+		_sp2->Play("Idle");
+
 		LifeTime* _lf = _child->AddComponent<LifeTime>();
 		_lf->maxLifeTime = 5;
-
-
-		/*Json _js;
-		_js.Load("Data/test_in.json");
-		_js.Save("Data/test_out.json");	*/
 	}
 	//!
-	void _Destroy(void) override
+	void _Shutdown(void)
 	{ 
-		LOG("Destroy...");
+		LOG("Shutdown...");
 	}
 	//!
-	void _BeginFrame(void) override
+	void _BeginFrame(void)
 	{ 
 		m_requireExit = m_requireExit || arctic::easy::IsKey(arctic::kKeyEscape);
 	}
 	//!
-	void _ProcessFrame(void) override
+	void _Update(void)
 	{
-		m_currentScene->ProcessFrame();
+		m_currentScene->Update();
 	}
 	//!
-	void _EndFrame(void) override
+	void _Render(void)
+	{
+		m_currentScene->Render();
+	}
+	//!
+	void _EndFrame(void)
 	{ 
 	}
 

@@ -5,13 +5,21 @@
 //----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
-void Time::Update(void)
+bool Time::OnEvent(int _type, void* _arg)
 {
-	double _ct = arctic::easy::Time();
-	if (m_prevTime == 0)
+	switch (_type)
+	{
+	case SystemEvent::BeginFrame:
+	{
+		double _ct = arctic::easy::Time();
+		if (m_prevTime == 0)
+			m_prevTime = _ct;
+		m_deltaTime = (float)(_ct - m_prevTime);
 		m_prevTime = _ct;
-	m_deltaTime = (float)(_ct - m_prevTime);
-	m_prevTime = _ct;
+	} break;
+	}
+
+	return false;
 }
 //----------------------------------------------------------------------------//
 

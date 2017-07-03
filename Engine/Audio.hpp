@@ -28,7 +28,10 @@ public:
 	static void Register(void);
 
 protected:
-	void _ProcessFrame(void) override;
+	//!
+	void _Update(void) override;
+	//!
+	void _PostUpdate(void) override;
 };
 
 //----------------------------------------------------------------------------//

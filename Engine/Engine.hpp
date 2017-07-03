@@ -11,8 +11,10 @@
 #include "Audio.hpp"
 #include "Logic.hpp"
 
+#include "System.hpp"
 #include "Time.hpp"
 #include "Resource.hpp"
+#include "Input.hpp"
 
 #include "Application.hpp"
 

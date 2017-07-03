@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.hpp"
+#include "System.hpp"
 
 //----------------------------------------------------------------------------//
 // Time
@@ -8,11 +8,11 @@
 
 #define gTime Time::Instance
 
-class Time : public Singleton<Time>
+class Time : public Module<Time>
 {
 public:
 	//!
-	void Update(void);
+	bool OnEvent(int _type, void* _arg) override;
 
 	//!
 	float Delta(void) { return m_deltaTime; }

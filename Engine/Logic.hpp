@@ -48,7 +48,7 @@ protected:
 	//!
 	void _RemoveComponent(Component* _component) override;
 	//!
-	void _ProcessFrame(void) override;
+	void _Update(void) override;
 
 	LogicComponent* m_first = nullptr;
 };

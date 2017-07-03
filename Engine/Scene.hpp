@@ -205,7 +205,11 @@ protected:
 	virtual void _RemoveComponent(Component* _component) { }
 
 	//!
-	virtual void _ProcessFrame(void) { }
+	virtual void _Update(void) { }
+	//!
+	virtual void _PostUpdate(void) { }
+	//!
+	virtual void _Render(void) { }
 
 	Scene* m_scene = nullptr;
 	int m_priority = 0;
@@ -237,7 +241,11 @@ public:
 	void _SortSystems(void);
 
 	//!
-	void ProcessFrame(void);
+	void Update(void);
+	//!
+	void PostUpdate(void);
+	//!
+	void Render(void);
 
 	//!
 	Entity* GetRoot(void) { return m_root; }

@@ -154,7 +154,6 @@ void SpriteRenderer::Update(void)
 	if (m_play)
 	{
 		m_animTime += gTime->Delta() * m_animSpeed;
-		//int _frame = (int)(m_anim.fps * m_animTime);
 		uint _count = Max(m_anim.start, m_anim.end) - Min(m_anim.start, m_anim.end);
 		float _time = m_animTime * (m_anim.fps / _count);
 
@@ -163,9 +162,9 @@ void SpriteRenderer::Update(void)
 
 		case AnimMode::PingPong:
 		{
-			_time -= floorf(_time);
-			if ((int)(_time) & 0x1)
-				_time = 1 - _time;
+_time -= floorf(_time);
+if ((int)(_time) & 0x1)
+_time = 1 - _time;
 
 		} break;
 
@@ -187,10 +186,7 @@ void SpriteRenderer::Update(void)
 		} break;
 		}
 
-		printf("%d %d %f\n", m_anim.start, m_anim.end, _time);
 		m_currentFrame = (int)Mix((float)m_anim.start, (float)m_anim.end, _time);
-
-		printf("%d\n", m_currentFrame);
 	}
 }
 //----------------------------------------------------------------------------//
@@ -259,7 +255,24 @@ void RenderWorld::_RemoveComponent(Component* _component)
 	}
 }
 //----------------------------------------------------------------------------//
-void RenderWorld::_ProcessFrame(void)
+void RenderWorld::_Update(void)
+{
+	for (RenderComponent* i = m_first; i; i = i->m_nextRenderComponent)
+	{
+		if (i->IsEnabled())
+		{
+			i->Update();
+			//TODO: check visibility
+			//i->SetVisibility(i->CheckVisibility(m_view));
+		}
+	}
+}
+//----------------------------------------------------------------------------//
+void RenderWorld::_PostUpdate(void)
+{
+}
+//----------------------------------------------------------------------------//
+void RenderWorld::_Render(void)
 {
 	Vector2 _camera = { 0, 0 };
 
@@ -272,16 +285,14 @@ void RenderWorld::_ProcessFrame(void)
 	m_visibleSet.clear();
 	for (RenderComponent* i = m_first; i; i = i->m_nextRenderComponent)
 	{
-		i->Update();
-
-		//TODO: check visibility
+		i->Update();		
 
 		if (i->IsEnabled()) // && i->IsVisible())
 			m_visibleSet.push_back(i);
 	}
 
 	std::sort(m_visibleSet.begin(), m_visibleSet.end(),
-		[](RenderComponent* _lhs, RenderComponent* _rhs) 
+		[](RenderComponent* _lhs, RenderComponent* _rhs)
 	{
 		// TODO: use priority and layers
 

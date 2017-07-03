@@ -1,26 +1,39 @@
-#include "Physics.hpp"
+#pragma once
+
+#include "System.hpp"
 
 //----------------------------------------------------------------------------//
-// PhysicsWorld
+// InputEvent
 //----------------------------------------------------------------------------//
 
-//----------------------------------------------------------------------------//
-void PhysicsWorld::Register(void)
+struct InputEvent
 {
-	//Object::Register<PhysicsComponent>();
+	enum Type
+	{
+		KeyUp = StringUtils::ConstHash("InputEvent::KeyUp"),
+		KeyDown = StringUtils::ConstHash("InputEvent::KeyUp"),
+		KeyRepeat = StringUtils::ConstHash("InputEvent::KeyRepeat"),
+		MouseMove = StringUtils::ConstHash("InputEvent::MouseMove"),
+	};
 
-	Object::Register<PhysicsWorld>();
-	AddDefaultSystem(TypeName, PHYSICS_PRIORITY);
-}
+	// ...
+};
+
 //----------------------------------------------------------------------------//
-void PhysicsWorld::_Update(void)
+// Input
+//----------------------------------------------------------------------------//
+
+#define gInput Input::Instance
+
+class Input : public Module<Input>
 {
-}
-//----------------------------------------------------------------------------//
-void PhysicsWorld::_PostUpdate(void)
-{
-}
-//----------------------------------------------------------------------------//
+public:
+
+	//TODO
+
+protected:
+
+};
 
 //----------------------------------------------------------------------------//
 //

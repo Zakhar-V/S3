@@ -161,7 +161,11 @@ protected:
 	//!
 	void _RemoveComponent(Component* _component) override;
 	//!
-	void _ProcessFrame(void) override;
+	void _Update(void) override;
+	//!
+	void _PostUpdate(void) override;
+	//!
+	void _Render(void) override;
 
 	RenderComponent* m_first = nullptr;
 	Array<RenderComponent*> m_visibleSet;

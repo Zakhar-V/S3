@@ -398,10 +398,22 @@ void Scene::_SortSystems(void)
 	});
 }
 //----------------------------------------------------------------------------//
-void Scene::ProcessFrame(void)
+void Scene::Update(void)
 {
 	for (auto i : m_systemOrder)
-		i->_ProcessFrame();
+		i->_Update();
+}
+//----------------------------------------------------------------------------//
+void Scene::PostUpdate(void)
+{
+	for (auto i : m_systemOrder)
+		i->_PostUpdate();
+}
+//----------------------------------------------------------------------------//
+void Scene::Render(void)
+{
+	for (auto i : m_systemOrder)
+		i->_Render();
 }
 //----------------------------------------------------------------------------//
 void Scene::_LinkRootEntity(Entity* _entity)
