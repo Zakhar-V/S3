@@ -199,6 +199,27 @@ void SpriteRenderer::Draw(const Vector2& _camera)
 	Image* _img = m_sprite->GetImageByIndex(m_currentFrame);
 
 	_img->GetData().Draw((int)(_t.e + _camera.x), int(_t.f + _camera.y), _t.Angle(), _t.Scale());
+
+#if 1 // DEBUG DRAW
+	arctic::Rgba _clr = arctic::Rgba(0xff, 0, 0, 0xff);
+	Rect _r;
+	_r.FromSizePivot({ (float)_img->GetData().Width(), (float)_img->GetData().Height() }, { (float)_img->GetData().Pivot().x, (float)_img->GetData().Pivot().y });
+
+	Vector2 _lt = { _r.left, _r.top };
+	Vector2 _lb = { _r.left, _r.bottom };
+	Vector2 _rb = { _r.right, _r.bottom };
+	Vector2 _rt = { _r.right, _r.top };
+
+	_lt = _camera + _t * _lt;
+	_lb = _camera + _t * _lb;
+	_rb = _camera + _t * _rb;
+	_rt = _camera + _t * _rt;
+
+	arctic::easy::DrawLine(arctic::Vec2Si32(_lt.x, _lt.y), arctic::Vec2Si32(_lb.x, _lb.y), _clr);
+	arctic::easy::DrawLine(arctic::Vec2Si32(_lb.x, _lb.y), arctic::Vec2Si32(_rb.x, _rb.y), _clr);
+	arctic::easy::DrawLine(arctic::Vec2Si32(_rb.x, _rb.y), arctic::Vec2Si32(_rt.x, _rt.y), _clr);
+	arctic::easy::DrawLine(arctic::Vec2Si32(_rt.x, _rt.y), arctic::Vec2Si32(_lt.x, _lt.y), _clr);
+#endif
 }
 //----------------------------------------------------------------------------//
 
