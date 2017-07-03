@@ -45,6 +45,17 @@ String ResourceCache::MakePath(const String& _name, const String& _ext)
 	return m_dataPath + _name + "." + _ext;
 }
 //----------------------------------------------------------------------------//
+bool ResourceCache::FileExists(const String& _name)
+{
+	FILE* _f = fopen(_name.c_str(), "rb");
+	if (_f)
+	{
+		fclose(_f);
+		return true;
+	}
+	return false;
+}
+//----------------------------------------------------------------------------//
 Resource* ResourceCache::GetResource(const char* _type, const String& _name, uint _typeid)
 {
 	if (!_typeid)

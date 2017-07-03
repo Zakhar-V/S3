@@ -52,6 +52,9 @@ public:
 	String MakePath(const String& _name, const String& _ext);
 
 	//!
+	bool FileExists(const String& _name);
+
+	//!
 	Resource* GetResource(const char* _type, const String& _name, uint _typeid = 0);
 	//!
 	template <class T> T* GetResource(const String& _name)
