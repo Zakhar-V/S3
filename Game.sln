@@ -10,7 +10,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{5B513DC9-89F8-4A42-A0CD-12FBC6B490F8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageConverter", "ImageConverter\ImageConverter.vcxproj", "{DACDA4A0-958E-46FF-A362-A3524B089796}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{DCFAA186-5818-4F5D-80A1-FC61883FD0A4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageConverter", "Tools\ImageConverter\ImageConverter.vcxproj", "{DACDA4A0-958E-46FF-A362-A3524B089796}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageSplitter", "Tools\ImageSplitter\ImageSplitter.vcxproj", "{784BD611-4F5E-46E2-8BD7-098B13D7C164}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,8 +48,20 @@ Global
 		{DACDA4A0-958E-46FF-A362-A3524B089796}.Release|x64.Build.0 = Release|x64
 		{DACDA4A0-958E-46FF-A362-A3524B089796}.Release|x86.ActiveCfg = Release|Win32
 		{DACDA4A0-958E-46FF-A362-A3524B089796}.Release|x86.Build.0 = Release|Win32
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164}.Debug|x64.ActiveCfg = Debug|x64
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164}.Debug|x64.Build.0 = Debug|x64
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164}.Debug|x86.ActiveCfg = Debug|Win32
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164}.Debug|x86.Build.0 = Debug|Win32
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164}.Release|x64.ActiveCfg = Release|x64
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164}.Release|x64.Build.0 = Release|x64
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164}.Release|x86.ActiveCfg = Release|Win32
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DACDA4A0-958E-46FF-A362-A3524B089796} = {DCFAA186-5818-4F5D-80A1-FC61883FD0A4}
+		{784BD611-4F5E-46E2-8BD7-098B13D7C164} = {DCFAA186-5818-4F5D-80A1-FC61883FD0A4}
 	EndGlobalSection
 EndGlobal
