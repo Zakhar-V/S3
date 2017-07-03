@@ -165,6 +165,8 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\Input.json" />
+    <None Include="Data\InputDefaults.json" />
     <None Include="Data\Sprites\Test.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

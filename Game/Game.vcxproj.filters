@@ -20,5 +20,11 @@
     <None Include="Data\Sprites\Test.json">
       <Filter>Data\Sprites</Filter>
     </None>
+    <None Include="Data\Input.json">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="Data\InputDefaults.json">
+      <Filter>Data</Filter>
+    </None>
   </ItemGroup>
 </Project>

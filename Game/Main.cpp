@@ -36,6 +36,9 @@ public:
 // Game
 //----------------------------------------------------------------------------//
 
+InputSettings gDefaultInputSettings;
+
+
 class Game : public Application
 {
 public:
@@ -74,6 +77,7 @@ protected:
 		LOG("Startup...");
 
 		gResources->SetDataPath("Data/");
+		_LoadInputSettings();
 
 		Object::Register<LifeTime>();
 
@@ -85,8 +89,8 @@ protected:
 		_test->Scale(5);
 
 		SpriteRenderer* _sp = _test->AddComponent<SpriteRenderer>();
-		_sp->SetSprite("Sprites/Test");
-		_sp->Play("Run", AnimMode::PingPong);
+		_sp->SetSprite("test");
+		//_sp->Play("Run", AnimMode::PingPong);
 
  
 		Entity* _child = _test->AddChild();
@@ -94,16 +98,18 @@ protected:
 		_child->Translate({ 50, 0 });
 
 		SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
-		_sp2->SetSprite("Sprites/Test");
-		_sp2->Play("Idle");
+		_sp2->SetSprite("test");
+		//_sp2->Play("Idle");
 
-		LifeTime* _lf = _child->AddComponent<LifeTime>();
-		_lf->maxLifeTime = 5;
+		//LifeTime* _lf = _child->AddComponent<LifeTime>();
+		//_lf->maxLifeTime = 5;
 	}
 	//!
 	void _Shutdown(void)
 	{ 
 		LOG("Shutdown...");
+
+		gInput->Settings().Save("Input");
 	}
 	//!
 	void _BeginFrame(void)
@@ -123,6 +129,94 @@ protected:
 	//!
 	void _EndFrame(void)
 	{ 
+	}
+
+
+	//!
+	void _LoadInputSettings(void)
+	{
+		if (!gDefaultInputSettings.Load("InputDefaults") || gDefaultInputSettings.actions.empty())
+		{
+			// MoveX
+			{
+				InputAction _action;
+				_action.negative = KeyCode::kKeyA;
+				_action.negativeAlt = KeyCode::kKeyLeft;
+				_action.positive = KeyCode::kKeyD;
+				_action.positiveAlt = KeyCode::kKeyRight;
+
+				gDefaultInputSettings.actions["MoveX"] = _action;
+			}
+			// MoveY
+			{
+				InputAction _action;
+				_action.negative = KeyCode::kKeyS;
+				_action.negativeAlt = KeyCode::kKeyDown;
+				_action.positive = KeyCode::kKeyW;
+				_action.positiveAlt = KeyCode::kKeyUp;
+
+				gDefaultInputSettings.actions["MoveY"] = _action;
+			}
+
+			//! Jump
+			{
+				InputAction _action;
+				_action.positive = KeyCode::kKeySpace;
+
+				gDefaultInputSettings.actions["Jump"] = _action;
+			}
+
+			//! Fire1
+			{
+
+				InputAction _action;
+				_action.positive = KeyCode::kKeyMouseLeft;
+
+				gDefaultInputSettings.actions["Fire1"] = _action;
+			}
+			//! Fire2
+			{
+
+				InputAction _action;
+				_action.positive = KeyCode::kKeyMouseRight;
+
+				gDefaultInputSettings.actions["Fire2"] = _action;
+			}
+			//! MouseX
+			{
+
+				InputAction _action;
+				_action.type = InputAction::Type::Mouse;
+				_action.axis = 0;
+
+				gDefaultInputSettings.actions["MouseX"] = _action;
+			}
+			//! MouseY
+			{
+
+				InputAction _action;
+				_action.type = InputAction::Type::Mouse;
+				_action.axis = 1;
+
+				gDefaultInputSettings.actions["MouseY"] = _action;
+			}
+			//! MouseWheel
+			{
+
+				InputAction _action;
+				_action.type = InputAction::Type::Mouse;
+				_action.axis = 2;
+
+				gDefaultInputSettings.actions["MouseWheel"] = _action;
+			}
+
+			gDefaultInputSettings.Save("InputDefaults");
+		}
+
+		if (!gInput->Settings().Load("Input") || gInput->Settings().actions.empty())
+		{
+			gInput->Settings() = gDefaultInputSettings;
+		}
 	}
 
 	ScenePtr m_currentScene;

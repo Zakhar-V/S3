@@ -1,0 +1,82 @@
+{
+	"MouseX" : {
+		"Type" : "Mouse",
+		"Negative" : "None",
+		"NegativeAlt" : "None",
+		"Positive" : "None",
+		"PositiveAlt" : "None",
+		"Axis" : 0,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	},
+	"MoveX" : {
+		"Type" : "Button",
+		"Negative" : "A",
+		"NegativeAlt" : "Left",
+		"Positive" : "D",
+		"PositiveAlt" : "Right",
+		"Axis" : 0,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	},
+	"MouseY" : {
+		"Type" : "Mouse",
+		"Negative" : "None",
+		"NegativeAlt" : "None",
+		"Positive" : "None",
+		"PositiveAlt" : "None",
+		"Axis" : 1,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	},
+	"MoveY" : {
+		"Type" : "Button",
+		"Negative" : "S",
+		"NegativeAlt" : "Down",
+		"Positive" : "W",
+		"PositiveAlt" : "Up",
+		"Axis" : 0,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	},
+	"Jump" : {
+		"Type" : "Button",
+		"Negative" : "None",
+		"NegativeAlt" : "None",
+		"Positive" : "Space",
+		"PositiveAlt" : "None",
+		"Axis" : 0,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	},
+	"Fire1" : {
+		"Type" : "Button",
+		"Negative" : "None",
+		"NegativeAlt" : "None",
+		"Positive" : "Mouse Left",
+		"PositiveAlt" : "None",
+		"Axis" : 0,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	},
+	"Fire2" : {
+		"Type" : "Button",
+		"Negative" : "None",
+		"NegativeAlt" : "None",
+		"Positive" : "Mouse Right",
+		"PositiveAlt" : "None",
+		"Axis" : 0,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	},
+	"MouseWheel" : {
+		"Type" : "Mouse",
+		"Negative" : "None",
+		"NegativeAlt" : "None",
+		"Positive" : "None",
+		"PositiveAlt" : "None",
+		"Axis" : 2,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	}
+}
