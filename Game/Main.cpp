@@ -33,6 +33,23 @@ public:
 };
 
 //----------------------------------------------------------------------------//
+// 
+//----------------------------------------------------------------------------//
+
+class Rotate : public LogicComponent
+{
+public:
+	RTTI("Rotate");
+
+	float speed = 1;
+
+	void Update(void)
+	{
+		GetEntity()->Rotate(gTime->Delta() * speed * PI);
+	}
+};
+
+//----------------------------------------------------------------------------//
 // Game
 //----------------------------------------------------------------------------//
 
@@ -80,22 +97,26 @@ protected:
 		_LoadInputSettings();
 
 		Object::Register<LifeTime>();
+		Object::Register<Rotate>();
 
 
 		m_currentScene = new Scene;
 
 		EntityPtr _test = new Entity;
 		_test->SetScene(m_currentScene);
-		_test->Scale(5);
+		//_test->Scale(1.5f);
 
 		SpriteRenderer* _sp = _test->AddComponent<SpriteRenderer>();
 		_sp->SetSprite("test");
-		//_sp->Play("Run", AnimMode::PingPong);
+		_sp->Enable(true);
+		_sp->Play("Run", AnimMode::PingPong);
 
  
 		Entity* _child = _test->AddChild();
 		_child->Scale(.5f);
-		_child->Translate({ 50, 0 });
+		_child->Translate({ 250, 250 });
+		_child->AddComponent<Rotate>();
+
 
 		SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
 		_sp2->SetSprite("test");

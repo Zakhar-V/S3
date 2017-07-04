@@ -7,8 +7,12 @@
 //
 //----------------------------------------------------------------------------//
 
-const float Deg2Rad = 0.0174533f;
-const float Rad2Deg = 57.29580406904963f;
+const float PI = 3.14159265359f;
+const float PI2 = PI * 2;
+const float HALF_PI = PI / 2;
+const float QUAD_PI = PI / 4;
+const float Deg2Rad = PI / 180;
+const float Rad2Deg = 180 / PI;
 
 //!
 template <typename T> const T& Min(const T& _a, const T& _b) { return _a < _b ? _a : _b; }
@@ -32,32 +36,61 @@ template <typename T> T Mix(const T& _a, const T& _b, float _t) { return _a + (_
 
 struct Vector2
 {
+	//!
 	Vector2(void) = default;
+	//!
 	Vector2(float _s) : x(_s), y(_s) { }
+	//!
 	Vector2(float _x, float _y) : x(_x), y(_y) { }
 
+	//!
 	const float operator [] (unsigned  int _index) const { return (&x)[_index]; }
+	//!
 	float& operator [] (unsigned  int _index) { return (&x)[_index]; }
+	//!
 	const float* operator * (void) const { return &x; }
+	//!
 	float* operator * (void) { return &x; }
 
+	//!
+	Vector2(const arctic::Vec2Si32& _v) : x((float)_v.x), y((float)_v.y) { }
+	//!
+	operator arctic::Vec2Si32(void) const { return arctic::Vec2Si32((int)x, (int)y); }
+
+	//!
 	Vector2 operator - (void) const { return Vector2(-x, -y); }
+	//!
 	Vector2 operator + (const Vector2& _rhs) const { return Vector2(x + _rhs.x, y + _rhs.y); }
+	//!
 	Vector2 operator - (const Vector2& _rhs) const { return Vector2(x - _rhs.x, y - _rhs.y); }
+	//!
 	Vector2 operator * (const Vector2& _rhs) const { return Vector2(x * _rhs.x, y * _rhs.y); }
+	//!
 	Vector2 operator / (const Vector2& _rhs) const { return Vector2(x / _rhs.x, y / _rhs.y); }
+	//!
 	Vector2 operator * (float _rhs) const { return Vector2(x * _rhs, y * _rhs); }
+	//!
 	Vector2 operator / (float _rhs) const { return Vector2(x / _rhs, y / _rhs); }
+	//!
 	Vector2& operator += (const Vector2& _rhs) { x += _rhs.x, y += _rhs.y;	return *this; }
+	//!
 	Vector2& operator -= (const Vector2& _rhs) { x -= _rhs.x, y -= _rhs.y;	return *this; }
+	//!
 	Vector2& operator *= (const Vector2& _rhs) { x *= _rhs.x, y *= _rhs.y;	return *this; }
+	//!
 	Vector2& operator /= (const Vector2& _rhs) { x /= _rhs.x, y /= _rhs.y;	return *this; }
+	//!
 	Vector2& operator *= (float _rhs) { x *= _rhs, y *= _rhs;	return *this; }
+	//!
 	Vector2& operator /= (float _rhs) { x /= _rhs, y /= _rhs;	return *this; }
+	//!
 	friend Vector2 operator / (float _lhs, const Vector2& _rhs) { return Vector2(_lhs / _rhs.x, _lhs / _rhs.y); }
+	//!
 	friend Vector2 operator * (float _lhs, const Vector2& _rhs) { return Vector2(_lhs * _rhs.x, _lhs * _rhs.y); }
 
+	//!
 	bool operator == (const Vector2& _rhs) const { return x == _rhs.x && y == _rhs.y; }
+	//!
 	bool operator != (const Vector2& _rhs) const { return x != _rhs.x || y != _rhs.y; }
 
 	union
@@ -188,12 +221,48 @@ struct Rect
 	friend Rect operator * (const Vector2& _lhs, const Rect& _rhs) { return _rhs * _lhs; }
 
 	//!
+	Rect operator + (const Rect& _rhs) const 
+	{ 
+		return Rect(
+			Min(left, _rhs.left),
+			Min(top, _rhs.top),
+			Max(right, _rhs.right),
+			Max(bottom, _rhs.bottom));
+	}
+
+	//!
 	Rect operator * (const Rect& _rhs) { return Rect(left * _rhs.left, top * _rhs.top, right * _rhs.right, bottom * _rhs.bottom); }
 
 	//!
 	bool operator == (const Rect& _rhs) const { return left == _rhs.left &&  top == _rhs.top && right == _rhs.right && bottom == _rhs.bottom; }
 	//!
 	bool operator != (const Rect& _rhs) const { return !(*this == _rhs); }
+
+	//!
+	float Proximity(const Rect& _other) const 
+	{ 
+		float _x = left + right - (_other.left + _other.right);
+		float _y = top + bottom - (_other.top + _other.bottom);
+		return fabsf(_x) + fabsf(_y);
+	}
+	//!
+	int Select(const Rect& _a, const Rect& _b) const { return Proximity(_a) < Proximity(_b) ? 0 : 1; }
+	
+	//!
+	bool Contains(const Vector2& _test) const 
+	{ 
+		return _test.x >= left && _test.x <= right && _test.y >= top && _test.y <= bottom;
+	}
+	//!
+	bool Contains(const Rect& _test) const 
+	{ 
+		return _test.left >= left && _test.top >= top && _test.right <= right && _test.bottom <= bottom;
+	}
+	//!
+	bool Intersects(const Rect& _test) const
+	{ 
+		return !((_test.left < left && _test.top < top) || (_test.right > right && _test.bottom > bottom));
+	}
 
 	float left = 0, top = 0, right = 0, bottom = 0;
 

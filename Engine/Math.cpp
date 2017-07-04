@@ -54,12 +54,15 @@ Vector2 operator * (const Transform& _lhs, const Vector2& _rhs)
 //----------------------------------------------------------------------------//
 float Transform::Angle(void) const
 {
-	return atan2f(c, d);
+	float _scaleX = 1 / sqrtf(a * a + b * b);
+	float _angle = atan2f(c * _scaleX, d * _scaleX);
+
+	return fmodf(_angle + PI2, PI2);
 }
 //----------------------------------------------------------------------------//
 float Transform::Scale(void) const
 {
-	return sqrtf(a * a + b * b) * (a >= 0 ? 1 : -1); // x
+	return sqrtf(a * a + b * b); // x
 }
 //----------------------------------------------------------------------------//
 const Vector2& Transform::Pos(void) const
