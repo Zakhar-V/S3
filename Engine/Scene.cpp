@@ -26,6 +26,32 @@ void Component::Enable(bool _enable)
 	m_enabled = _enable;
 }
 //----------------------------------------------------------------------------//
+Json Component::Serialize(void)
+{
+	Json _dst;
+	_dst["Type"] = GetTypeName();
+	_dst["Address"] = (uintptr_t)(void*)this;
+	_dst["Enabled"] = m_enabled;
+
+	return _dst;
+}
+//----------------------------------------------------------------------------//
+void Component::Deserialize(const Json& _src, class ObjectSolver* _context)
+{
+	m_oldAddress = (void*)(uintptr_t)_src["Address"];
+	Enable(_src["Enabled"]);
+
+	if (_context)
+	{
+		_context->AddObject(this, m_oldAddress);
+	}
+}
+//----------------------------------------------------------------------------//
+void Component::SolveObjects(ObjectSolver* _context)
+{
+	// Do nothing
+}
+//----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
 // Entity
@@ -256,7 +282,7 @@ void Entity::SetTransform(const Transform& _m)
 		_local = m_parent->GetTransform().Inverse() * _local;
 
 	m_scale = _local.Scale();
-	m_angle = _local.Angle();
+	m_angle = _local.Angle() * Deg2Rad;
 	m_pos = _local.Pos();
 
 	_InvalidateTransform();
@@ -291,6 +317,83 @@ void Entity::_UpdateTransform(void)
 		for (Component* i = m_component; i; i = i->m_nextComponent)
 			i->OnEntityTransformUpdated();
 	}
+}
+//----------------------------------------------------------------------------//
+Json Entity::Serialize(void)
+{
+	Json _dst;
+
+	_dst["Type"] = GetTypeName();
+	_dst["Address"] = (uintptr_t)(void*)this;
+	_dst["Enabled"] = m_enabled;
+	_dst["Position"] = m_pos;
+	_dst["Scale"] = m_scale;
+	_dst["Angle"] = m_angle * Rad2Deg;
+	//TODO: save name and local ID
+
+	{
+		Json& _components = _dst["Components"];
+		for (Component* i = m_component; i; i = i->m_nextComponent)
+		{
+			if (i->IsSerializable())
+				_components.Push(i->Serialize());
+		}
+	}
+
+	{
+		Json& _children = _dst["Children"];
+		for (Entity* i = m_child; i; i = i->m_next)
+		{
+			if (i->IsSerializable())
+				_children.Push(i->Serialize());
+		}
+	}
+
+	return _dst;
+}
+//----------------------------------------------------------------------------//
+void Entity::Deserialize(const Json& _src, class ObjectSolver* _context)
+{
+	// TODO: cleanup
+
+	m_oldAddress = (void*)(uintptr_t)_src["Address"];
+	Enable(_src["Enabled"]);
+	SetPosition(_src["Position"]);
+	SetScale(_src["Scale"]);
+	SetRotation(_src["Angle"].AsFloat() * Deg2Rad);
+
+	if (_context)
+	{
+		_context->AddObject(this, m_oldAddress);
+	}
+
+	{									 
+		const Json& _components = _src["Components"];
+		for (uint i = _components.Size(); i--;)
+		{
+			const Json& _desc = _components[i];
+			Component* _component = AddComponent(_desc["Type"].AsString().c_str());
+			if (_component)
+				_component->Deserialize(_desc, _context);
+		}
+	}
+
+	{
+		const Json& _children = _src["Children"];
+		for (uint i = 0; i < _children.Size(); ++i)
+		{
+			const Json& _desc = _children[i];
+			//Entity* _child = AddChild(_desc["Type"].AsString().c_str());
+			Entity* _child = AddChild();
+			if (_child)
+				_child->Deserialize(_desc, _context);
+		}
+	}
+}
+//----------------------------------------------------------------------------//
+void Entity::SolveObjects(ObjectSolver* _context)
+{
+
 }
 //----------------------------------------------------------------------------//
 

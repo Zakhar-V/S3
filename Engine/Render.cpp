@@ -2,6 +2,39 @@
 #include "Time.hpp"
 
 //----------------------------------------------------------------------------//
+// AnimMode
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+String AnimModeToString(AnimMode _code)
+{
+	switch (_code)
+	{
+	case AnimMode::Once:
+		return "Once";
+	case AnimMode::PingPong:
+		return "PingPong";
+	case AnimMode::Loop:
+		return "Loop";
+	}
+	return "Default";
+}
+//----------------------------------------------------------------------------//
+AnimMode AnimModeFromString(const String& _name)
+{
+	AnimMode _mode = AnimMode::Default;
+	if (_name == "Loop")
+		_mode = AnimMode::Loop;
+	else if (_name == "PingPong")
+		_mode = AnimMode::PingPong;
+	else if (_name == "Once")
+		_mode = AnimMode::Once;
+
+	return _mode;
+}
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
 // Image
 //----------------------------------------------------------------------------//
 
@@ -94,16 +127,13 @@ void Sprite::Load(const char* _filename)
 		for (auto i = _anims.Begin(); i != _anims.End(); ++i)
 		{
 			Animation _anim;
+			_anim.name = i->first;
 			_anim.start = i->second["Start"];
 			_anim.end = i->second["End"];
 			_anim.fps = i->second["FrameRate"];
 			
-			String _modeStr = i->second["Mode"];
-			if (_modeStr == "Loop")
-				_anim.mode = AnimMode::Loop;
-			else if (_modeStr == "PingPong")
-				_anim.mode = AnimMode::PingPong;
-			else //if (_modeStr == "Default" || _modeStr == "Once")
+			_anim.mode = AnimModeFromString(i->second["Mode"]);
+			if (_anim.mode == AnimMode::Default)
 				_anim.mode = AnimMode::Once;
 
 			if(_anim.start > m_images.size() || _anim.end > m_images.size())
@@ -149,12 +179,35 @@ void SpriteRenderer::Play(const String& _name, AnimMode _mode)
 	}
 }
 //----------------------------------------------------------------------------//
+void SpriteRenderer::SetAnimationSpeed(float _speed)
+{
+	m_animSpeed = _speed;
+}
+//----------------------------------------------------------------------------//
+void SpriteRenderer::SetAnimationMode(AnimMode _mode)
+{
+	m_animMode = _mode;
+}
+//----------------------------------------------------------------------------//
+void SpriteRenderer::Play(bool _play)
+{
+	m_play = _play;
+}
+//----------------------------------------------------------------------------//
+void SpriteRenderer::Stop(bool _stop)
+{
+	m_animTime = 0;
+	Play(_stop);
+}
+//----------------------------------------------------------------------------//
 void SpriteRenderer::Update(void)
 {
 	if (m_play)
 	{
 		m_animTime += gTime->Delta() * m_animSpeed;
 		uint _count = Max(m_anim.start, m_anim.end) - Min(m_anim.start, m_anim.end);
+		if (_count == 0)
+			_count = 1;
 		float _time = m_animTime * (m_anim.fps / _count);
 
 		switch (m_anim.mode)
@@ -220,6 +273,33 @@ void SpriteRenderer::Draw(const Vector2& _camera)
 	arctic::easy::DrawLine(_rb, _rt, _clr);
 	arctic::easy::DrawLine(_rt, _lt, _clr);
 #endif
+}
+//----------------------------------------------------------------------------//
+Json SpriteRenderer::Serialize(void)
+{
+	Json _dst = RenderComponent::Serialize();
+	_dst["Sprite"] = m_sprite ? m_sprite->GetName() : nullptr;
+	_dst["Animation"] = m_anim.name;
+	_dst["Speed"] = m_animSpeed;
+	_dst["Time"] = m_animTime;
+	_dst["Play"] = m_play;
+
+	return _dst;
+}
+//----------------------------------------------------------------------------//
+void SpriteRenderer::Deserialize(const Json& _src, class ObjectSolver* _context)
+{
+	RenderComponent::Deserialize(_src, _context);
+
+	// temp
+
+	SetSprite(_src["Sprite"]);
+	//SetAnimation
+
+	SetAnimationSpeed(_src["Speed"]);
+	m_animTime = _src["Time"];
+	Play(_src["Animation"].AsString());
+	Play(_src["Play"].AsBool());
 }
 //----------------------------------------------------------------------------//
 

@@ -70,6 +70,20 @@ const Vector2& Transform::Pos(void) const
 	return *reinterpret_cast<const Vector2*>(&e);
 }
 //----------------------------------------------------------------------------//
+Transform::Transform(const Json& _src) :
+	Transform(_src["Position"][0], _src["Position"][1], _src["Scale"], _src["Angle"].AsFloat() * Deg2Rad)
+{
+}
+//----------------------------------------------------------------------------//
+Transform::operator Json (void) const
+{
+	Json _dst;
+	_dst["Position"] = Pos();
+	_dst["Scale"] = Scale();
+	_dst["Angle"] = Angle() * Rad2Deg;
+	return _dst;
+}
+//----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
 // Rect

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.hpp"
+#include "Json.hpp"
 #include <math.h>
 
 //----------------------------------------------------------------------------//
@@ -93,6 +94,11 @@ struct Vector2
 	//!
 	bool operator != (const Vector2& _rhs) const { return x != _rhs.x || y != _rhs.y; }
 
+	//! Deserialize
+	Vector2(const Json& _src) : x(_src[0]), y(_src[1]) { }
+	//! Serialize
+	operator Json (void) const { return Json().Push(x).Push(y); }
+	
 	union
 	{
 		struct
@@ -133,6 +139,11 @@ struct Transform
 	float Scale(void) const;
 	//!
 	const Vector2& Pos(void) const;
+
+	//! Deserialize
+	Transform(const Json& _src);
+	//! Serialize
+	operator Json (void) const;
 
 	static const Transform Identity;
 };
@@ -263,6 +274,11 @@ struct Rect
 	{ 
 		return !((_test.left < left && _test.top < top) || (_test.right > right && _test.bottom > bottom));
 	}
+
+	//! Deserialize
+	Rect(const Json& _src) : left(_src[0]), top(_src[1]), right(_src[2]), bottom(_src[3]) { }
+	//! Serialize
+	operator Json (void) const { return Json().Push(left).Push(top).Push(right).Push(bottom); }
 
 	float left = 0, top = 0, right = 0, bottom = 0;
 

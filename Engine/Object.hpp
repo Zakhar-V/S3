@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.hpp"
+#include "Json.hpp"
 
 //----------------------------------------------------------------------------//
 // RefCounted
@@ -225,8 +226,39 @@ public:
 		return _info;
 	}
 
+	//!
+	virtual bool IsSerializable(void) { return false; }
+	//!
+	virtual Json Serialize(void) { return Json::Null; }
+	//!
+	virtual void Deserialize(const Json& _src, class ObjectSolver* _context = nullptr) { }
+	//!
+	virtual void SolveObjects(ObjectSolver* _context) { }
+
 private:
 	static HashMap<uint, TypeInfo> s_types;
+};
+
+//----------------------------------------------------------------------------//
+// ObjectSolver
+//----------------------------------------------------------------------------//
+
+class ObjectSolver : public NonCopyable
+{
+public:
+	//!
+	void AddObject(Object* _object, void* _oldAddress);
+	//!
+	Object* GetNewAddress(void* _oldAddress);
+	
+	//!
+	void Solve(void);
+	//!
+	void Clear(void);
+
+protected:
+	HashMap<Object*, void*> m_old;
+	HashMap<void*, ObjectPtr> m_new;
 };
 
 //----------------------------------------------------------------------------//

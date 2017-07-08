@@ -53,6 +53,14 @@ public:
 	//!
 	virtual void OnEntityParentChanged(void) { }
 
+	//!
+	bool IsSerializable(void) override { return true; }
+	//!
+	Json Serialize(void) override;
+	//!
+	void Deserialize(const Json& _src, class ObjectSolver* _context = nullptr) override;
+	//!
+	void SolveObjects(ObjectSolver* _context) override;
 
 protected:
 	friend class Entity;
@@ -62,6 +70,7 @@ protected:
 	Component* m_nextComponent = nullptr;
 
 	bool m_enabled = true;
+	void* m_oldAddress = nullptr;
 };
 
 //----------------------------------------------------------------------------//
@@ -132,6 +141,15 @@ public:
 	//! Set world transform
 	void SetTransform(const Transform& _m);
 
+	//!
+	bool IsSerializable(void) override { return true; }
+	//!
+	Json Serialize(void) override;
+	//!
+	void Deserialize(const Json& _src, class ObjectSolver* _context = nullptr) override;
+	//!
+	void SolveObjects(ObjectSolver* _context) override;
+
 protected:
 	friend class Scene;
 
@@ -163,6 +181,8 @@ protected:
 	float m_angle = 0; //!< local rotation
 	Vector2 m_pos = { 0, 0 }; //!< local position
 	Transform m_transform; //!< world transform
+
+	void* m_oldAddress = nullptr;
 };
 
 //----------------------------------------------------------------------------//

@@ -6,6 +6,10 @@
 typedef SharedPtr<class Image> ImagePtr;
 typedef SharedPtr<class Sprite> SpritePtr;
 
+//----------------------------------------------------------------------------//
+// AnimMode
+//----------------------------------------------------------------------------//
+
 enum class AnimMode
 {
 	Default,
@@ -13,6 +17,11 @@ enum class AnimMode
 	Loop,
 	PingPong,
 };
+
+//!
+String AnimModeToString(AnimMode _code);
+//!
+AnimMode AnimModeFromString(const String& _name);
 
 //----------------------------------------------------------------------------//
 // Image
@@ -49,6 +58,7 @@ public:
 
 	struct Animation
 	{
+		String name;
 		uint start = 0;
 		uint end = 0;
 		float fps = 10;
@@ -121,13 +131,30 @@ public:
 	//!
 	void SetSprite(const String& _name);
 
+	// TODO: more control
+
 	//!
 	void Play(const String& _name, AnimMode _mode = AnimMode::Default);
+	//!
+	void SetAnimation(const String& _name);
+	//!
+	void SetAnimationSpeed(float _speed);
+	//!
+	void SetAnimationMode(AnimMode _mode);
+	//!
+	void Play(bool _play = true);
+	//!
+	void Stop(bool _stop = true);
 
 	//!
 	void Update(void) override;
 	//!
 	void Draw(const Vector2& _camera) override;
+
+	//!
+	Json Serialize(void) override;
+	//!
+	void Deserialize(const Json& _src, class ObjectSolver* _context = nullptr) override;
 
 protected:
 
@@ -137,6 +164,8 @@ protected:
 	float m_animTime = 0;
 
 	float m_animSpeed = 1;
+	AnimMode m_animMode = AnimMode::Default;
+
 	bool m_play = false;
 };
 
