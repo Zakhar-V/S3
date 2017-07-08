@@ -53,7 +53,8 @@ void LogicSystem::_Update(void)
 	for (LogicComponent* i = m_first; i;)
 	{
 		LogicComponent* _next = i->m_nextLogicComponent;
-		i->Update();
+		if(i->IsEnabled())
+			i->Update();
 		i = _next;
 	}
 }
