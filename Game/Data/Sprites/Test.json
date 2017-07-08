@@ -83,7 +83,7 @@
     "Run": {
       "Start": 5,
       "End": 12,
-      "FrameRate": 12,
+      "FrameRate": 8,
       "Mode": "Loop"
     },
     "Attack": {

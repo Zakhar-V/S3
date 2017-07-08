@@ -30,6 +30,23 @@ public:
 		if (lifeTime >= maxLifeTime)
 			Entity::Destroy(GetEntity());
 	}
+
+	//!
+	Json Serialize(void) override
+	{
+		Json _dst = LogicComponent::Serialize();
+		_dst["MaxLifeTime"] = maxLifeTime;
+		_dst["LifeTime"] = lifeTime;
+
+		return _dst;
+	}
+	//!
+	void Deserialize(const Json& _src, class ObjectSolver* _context = nullptr) override
+	{
+		LogicComponent::Deserialize(_src, _context);
+		maxLifeTime = _src["MaxLifeTime"];
+		lifeTime = _src["LifeTime"];
+	}
 };
 
 //----------------------------------------------------------------------------//
@@ -47,6 +64,32 @@ public:
 	{
 		GetEntity()->Rotate(gTime->Delta() * speed * PI);
 	}
+
+	//!
+	Json Serialize(void) override
+	{
+		Json _dst = LogicComponent::Serialize();
+		_dst["Speed"] = speed;
+
+		return _dst;
+	}
+	//!
+	void Deserialize(const Json& _src, class ObjectSolver* _context = nullptr) override
+	{
+		LogicComponent::Deserialize(_src, _context);
+		speed = _src["Speed"];
+	}
+};
+
+//----------------------------------------------------------------------------//
+// PlayerController
+//----------------------------------------------------------------------------//
+
+class PlayerController
+{
+public:
+
+protected:
 };
 
 //----------------------------------------------------------------------------//
@@ -102,28 +145,55 @@ protected:
 
 		m_currentScene = new Scene;
 
-		EntityPtr _test = new Entity;
-		_test->SetScene(m_currentScene);
-		//_test->Scale(1.5f);
+		{
+			Json _test;
+			_test.Load(gResources->MakePath("Sprites/Test", "json").c_str());
+			_test.Save(gResources->MakePath("Sprites/Test2", "json").c_str());
+		}
 
-		SpriteRenderer* _sp = _test->AddComponent<SpriteRenderer>();
-		_sp->SetSprite("test");
-		_sp->Enable(true);
-		_sp->Play("Run", AnimMode::PingPong);
+		{
 
- 
-		Entity* _child = _test->AddChild();
-		_child->Scale(.5f);
-		_child->Translate({ 250, 250 });
-		_child->AddComponent<Rotate>();
+			EntityPtr _test = new Entity;
+			_test->SetScene(m_currentScene);
+			//_test->Scale(1.5f);
+
+			SpriteRenderer* _sp = _test->AddComponent<SpriteRenderer>();
+			_sp->SetSprite("test");
+			_sp->Enable(true);
 
 
-		SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
-		_sp2->SetSprite("test");
-		//_sp2->Play("Idle");
+			Entity* _child = _test->AddChild();
+			_child->Scale(2.5f);
+			_child->Translate({ 250, 250 });
+			Rotate* _rot = _child->AddComponent<Rotate>();
+			_rot->speed = 1;
 
-		//LifeTime* _lf = _child->AddComponent<LifeTime>();
-		//_lf->maxLifeTime = 5;
+
+			SpriteRenderer* _sp2 = _child->AddComponent<SpriteRenderer>();
+			_sp2->SetSprite("Sprites/Test");
+			_sp2->Play("Run", AnimMode::Default);
+			_sp2->SetAnimationSpeed(.25f);
+
+			LifeTime* _lf = _child->AddComponent<LifeTime>();
+			_lf->maxLifeTime = 5;
+			_lf->Enable(false);
+
+			_test->Serialize().Save(gResources->MakePath("entity", "json").c_str());
+		}
+
+		{
+			Json _desc;
+			_desc.Load(gResources->MakePath("entity", "json").c_str());
+			_desc.Save(gResources->MakePath("entity3", "json").c_str());
+
+			EntityPtr _test = new Entity;
+			_test->Deserialize(_desc);
+
+			_test->SetScene(m_currentScene);
+			_test->SetPosition({ 500, 500 });
+
+			_test->Serialize().Save(gResources->MakePath("entity2", "json").c_str());
+		}
 	}
 	//!
 	void _Shutdown(void)
