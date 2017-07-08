@@ -37,6 +37,16 @@ public:
 
 	//!
 	Component* GetNextComponent(void) { return m_nextComponent; }
+	//!
+	template <class T> Component* GetNextComponent(void)
+	{
+		for (Component* i = m_nextComponent; i; i = i->m_nextComponent)
+		{
+			if (i->IsTypeOf<T>())
+				return static_cast<T*>(i);
+		}
+		return nullptr;
+	}
 
 	//!
 	static void Destroy(Component* _component);
@@ -47,11 +57,7 @@ public:
 	void Enable(bool _enable);
 
 	//!
-	virtual void OnEntityTransformChanged(void) { }
-	//!
-	virtual void OnEntityTransformUpdated(void) { }
-	//!
-	virtual void OnEntityParentChanged(void) { }
+	virtual void OnEvent(int _event, void* _arg = nullptr) { }
 
 	//!
 	bool IsSerializable(void) override { return true; }
@@ -64,6 +70,14 @@ public:
 
 protected:
 	friend class Entity;
+
+	virtual void _Bind(Entity* _entity) { m_entity = _entity; }
+	//!
+	virtual void _OnEntityTransformChanged(void) { }
+	//!
+	virtual void _OnEntityTransformUpdated(void) { }
+	//!
+	virtual void _OnEntityParentChanged(void) { }
 
 	Entity* m_entity = nullptr;
 	Component* m_prevComponent = nullptr;
@@ -140,6 +154,13 @@ public:
 	const Transform& GetTransform(void);
 	//! Set world transform
 	void SetTransform(const Transform& _m);
+
+	//!
+	//virtual void OnEvent(int _event, Object* _sender = nullptr, void* _arg = nullptr) { }
+	//!
+	void SendEvent(int _event, void* _arg = nullptr);
+	//!
+	void BroadcastEvent(int _event, void* _arg = nullptr);
 
 	//!
 	bool IsSerializable(void) override { return true; }

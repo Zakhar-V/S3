@@ -70,8 +70,8 @@ Component* Entity::AddComponent(const char* _typename)
 	Component* _component = _obj.Cast<Component>();
 	LL_LINK(m_component, _component, m_prevComponent, m_nextComponent);
 
-	_component->m_entity = this;
 	_component->AddRef();
+	_component->_Bind(this);
 
 	if (m_scene)
 		m_scene->_AddComponent(_component);
@@ -88,7 +88,7 @@ void Entity::RemoveComponent(Component* _component)
 
 		LL_UNLINK(m_component, _component, m_prevComponent, m_nextComponent);
 
-		_component->m_entity = nullptr;
+		_component->_Bind(nullptr);
 		_component->Release();
 	}
 }
@@ -171,7 +171,7 @@ void Entity::SetParent(Entity* _parent, bool _keepWorldTransform)
 	_UpdateDepth();
 
 	for (Component* i = m_component; i; i = i->m_nextComponent)
-		i->OnEntityParentChanged();
+		i->_OnEntityParentChanged();
 
 	if (!m_parent && !m_scene)
 		Release();
@@ -295,7 +295,7 @@ void Entity::_InvalidateTransform(void)
 		m_transformUpdated = false;
 
 		for (Component* i = m_component; i; i = i->m_nextComponent)
-			i->OnEntityTransformChanged();
+			i->_OnEntityTransformChanged();
 
 		for (Entity* i = m_child; i; i = i->m_next)
 			i->_InvalidateTransform();
@@ -315,7 +315,33 @@ void Entity::_UpdateTransform(void)
 			m_transform = _local;
 
 		for (Component* i = m_component; i; i = i->m_nextComponent)
-			i->OnEntityTransformUpdated();
+			i->_OnEntityTransformUpdated();
+	}
+}
+//----------------------------------------------------------------------------//
+void Entity::SendEvent(int _event, void* _arg)
+{
+	if (IsEnabled())
+	{
+		for (Component* i = m_component; i; i = i->m_nextComponent)
+		{
+			if (i->m_enabled)
+				i->OnEvent(_event, _arg);
+		}
+	}
+}
+//----------------------------------------------------------------------------//
+void Entity::BroadcastEvent(int _event, void* _arg)
+{
+	if (IsEnabled())
+	{
+		SendEvent(_event, _arg);
+
+		for (Entity* i = m_child; i; i = i->m_next)
+		{
+			if(i->m_enabled)
+				i->BroadcastEvent(_event, _arg);
+		}
 	}
 }
 //----------------------------------------------------------------------------//
@@ -393,7 +419,7 @@ void Entity::Deserialize(const Json& _src, class ObjectSolver* _context)
 //----------------------------------------------------------------------------//
 void Entity::SolveObjects(ObjectSolver* _context)
 {
-
+	// Do nothing
 }
 //----------------------------------------------------------------------------//
 
