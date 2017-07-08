@@ -619,7 +619,7 @@ Json::Node& Json::Container(void)
 //----------------------------------------------------------------------------//
 const Json::Node& Json::Container(void) const
 {
-	return IsObject() ? _Node() : EmptyObject._Node();
+	return IsNode() ? _Node() : EmptyObject._Node();
 }
 //----------------------------------------------------------------------------//
 bool Json::Parse(const char* _str, String* _error)

@@ -77,6 +77,8 @@ struct Tokenizer
 //----------------------------------------------------------------------------//
 
 //!
+//!\todo uint64 for pointers on x64 architecture
+//!\todo hexadecimal numeric format	(non-standart json)
 class Json
 {
 public:
