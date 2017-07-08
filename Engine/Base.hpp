@@ -89,9 +89,15 @@ struct StringUtils
 	//!
 	static constexpr char Upper(char _ch) { return IsAlpha(_ch) ? (_ch & ~0x20) : _ch; }
 
-	//!\return BSD checksum
-	static constexpr uint ConstHash(const char* _str, uint _hash = 0) { return *_str ? ConstHash(_str + 1, ((_hash >> 1) + ((_hash & 1) << 15) + Lower(*_str)) & 0xffff) : _hash; }
-	//!
+	//! SDBM hash
+#pragma warning(disable:4307) // integer constant overflow
+	static constexpr uint ConstHash(const char* _str, uint _hash = 0)
+	{ 
+		//return *_str ? ConstHash(_str + 1, ((_hash >> 1) + ((_hash & 1) << 15) + Lower(*_str)) & 0xffff) : _hash;	// BSD checksum
+		return *_str ? ConstHash(_str + 1, Lower(*_str) + (_hash << 6) + (_hash << 16) - _hash) : _hash; // SDBM
+	}
+
+	//! SDBM hash
 	static uint Hash(const char* _str, uint _hash = 0);
 
 	//!

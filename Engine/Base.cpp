@@ -12,7 +12,8 @@ uint StringUtils::Hash(const char* _str, uint _hash)
 	if (!_str)
 		_str = "";
 	while (*_str)
-		_hash = ((_hash >> 1) + ((_hash & 1) << 15) + Lower(*_str++)) & 0xffff;
+		//_hash = ((_hash >> 1) + ((_hash & 1) << 15) + Lower(*_str++)) & 0xffff; // BSD checksum
+		_hash = Lower(*_str++) + (_hash << 6) + (_hash << 16) - _hash;
 	return _hash;
 }
 //----------------------------------------------------------------------------//
