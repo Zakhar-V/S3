@@ -567,19 +567,19 @@ void Scene::_SortSystems(void)
 	});
 }
 //----------------------------------------------------------------------------//
-void Scene::Update(void)
+void Scene::_Update(void)
 {
 	for (auto i : m_systemOrder)
 		i->_Update();
 }
 //----------------------------------------------------------------------------//
-void Scene::PostUpdate(void)
+void Scene::_PostUpdate(void)
 {
 	for (auto i : m_systemOrder)
 		i->_PostUpdate();
 }
 //----------------------------------------------------------------------------//
-void Scene::Render(void)
+void Scene::_Render(void)
 {
 	for (auto i : m_systemOrder)
 		i->_Render();
@@ -627,6 +627,60 @@ void Scene::_RemoveComponent(Component* _component)
 
 	for (auto i : m_systemOrder)
 		i->_RemoveComponent(_component);
+}
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+// SceneManager
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+SceneManager::SceneManager(void)
+{
+
+}
+//----------------------------------------------------------------------------//
+SceneManager::~SceneManager(void)
+{
+
+}
+//----------------------------------------------------------------------------//
+bool SceneManager::OnEvent(int _type, void* _arg)
+{
+	switch (_type)
+	{
+	case SystemEvent::Update:
+		if (m_currentScene)
+			m_currentScene->_Update();
+		break;
+
+	case SystemEvent::PostUpdate:
+		if (m_currentScene)
+			m_currentScene->_PostUpdate();
+		break;
+
+	case SystemEvent::Render:
+		if (m_currentScene)
+			m_currentScene->_Render();
+		break;
+
+	}
+	return false;
+}
+//----------------------------------------------------------------------------//
+void SceneManager::SetCurrentScene(Scene* _scene)
+{
+	if (m_currentScene)
+	{
+		//TODO: pause
+	}
+
+	m_currentScene = _scene;
+
+	if (m_currentScene)
+	{
+		//TODO: activate
+	}
 }
 //----------------------------------------------------------------------------//
 

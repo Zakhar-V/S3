@@ -1,5 +1,6 @@
 #pragma once
 
+#include "System.hpp"
 #include "Object.hpp"
 #include "Math.hpp"
 #include "Json.hpp"
@@ -297,18 +298,13 @@ public:
 	//
 	void _SortSystems(void);
 
-	//!
-	void Update(void);
-	//!
-	void PostUpdate(void);
-	//!
-	void Render(void);
 
 	//!
 	Entity* GetRoot(void) { return m_root; }
 
 protected:
 	friend class Entity;
+	friend class SceneManager;
 
 	//!
 	void _LinkRootEntity(Entity* _entity);
@@ -325,10 +321,43 @@ protected:
 	//!
 	void _RemoveComponent(Component* _component);
 
+	//!
+	void _Update(void);
+	//!
+	void _PostUpdate(void);
+	//!
+	void _Render(void);
+
 	HashMap<uint, SceneSystemPtr> m_systems;
 	Array<SceneSystem*> m_systemOrder;
 
 	Entity* m_root = nullptr;
+};
+
+//----------------------------------------------------------------------------//
+// SceneManager
+//----------------------------------------------------------------------------//
+
+#define gSceneManager SceneManager::Instance
+
+class SceneManager : public Module<SceneManager>
+{
+public:
+	//!
+	SceneManager(void);
+	//!
+	~SceneManager(void);
+
+	//!
+	bool OnEvent(int _type, void* _arg) override;
+
+	//!
+	void SetCurrentScene(Scene* _scene);
+	//!
+	Scene* GetCurrentScene(void) { return m_currentScene; }
+
+protected:
+	ScenePtr m_currentScene;
 };
 
 //----------------------------------------------------------------------------//
