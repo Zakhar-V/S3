@@ -287,44 +287,62 @@ struct Rect
 };
 
 //----------------------------------------------------------------------------//
-// Line
+// Color4f
 //----------------------------------------------------------------------------//
 
-struct Line
+struct Color4f
 {
-	Vector2 start;
-	Vector2 end;
+	//!
+	Color4f(void) = default;
+	//!
+	Color4f(float _r, float _g, float _b, float _a = 1) : r(_r), g(_g), b(_b), a(_a) { }
+
+	//! Deserialize
+	Color4f(const Json& _src) : r(_src[0]), g(_src[1]), b(_src[2]), a(_src[3]) { }
+	//! Serialize
+	operator Json (void) const { return Json().Push(r).Push(g).Push(b).Push(a); }
+
+	union
+	{
+		struct
+		{
+			float r, g, b, a;
+		};
+		float v[4];
+	};
 };
 
+
 //----------------------------------------------------------------------------//
-// Ray
+// Color4ub
 //----------------------------------------------------------------------------//
 
-struct Ray
+struct Color4ub
 {
-	Vector2 origin;
-	Vector2 dir;
-};
+	//!
+	Color4ub(void) = default;
+	//!
+	Color4ub(uint8 _r, uint8 _g, uint8 _b, uint8 _a = 0xff) : r(_r), g(_g), b(_b), a(_a) { }
 
-//----------------------------------------------------------------------------//
-// Bounds
-//----------------------------------------------------------------------------//
+	//!
+	Color4ub(const arctic::Rgba& _rgba) : r(_rgba.r), g(_rgba.g), b(_rgba.b), a(_rgba.a) { }
+	//!
+	operator const arctic::Rgba& (void) const { return *reinterpret_cast<const arctic::Rgba*>(v); }
+	
+	//! Deserialize
+	Color4ub(const Json& _src) : r(_src[0].AsInt() & 0xff), g(_src[1].AsInt() & 0xff), b(_src[2].AsInt() & 0xff), a(_src[3].AsInt() & 0xff) { }
+	//! Serialize
+	operator Json (void) const { return Json().Push(r).Push(g).Push(b).Push(a); }
 
-//! OOBB
-struct Bounds
-{
-	Vector2 center;
-	Vector2 extends;
-};
-
-//----------------------------------------------------------------------------//
-// Circle
-//----------------------------------------------------------------------------//
-
-struct Circle
-{
-	Vector2 center;
-	float radius;
+	union
+	{
+		struct
+		{
+			uint8 r, g, b, a;
+		};
+		uint rgba;
+		uint8 v[4];
+	};
 };
 
 //----------------------------------------------------------------------------//
