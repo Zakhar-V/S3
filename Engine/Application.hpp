@@ -3,6 +3,7 @@
 #include "System.hpp"
 #include "Time.hpp"
 #include "Resource.hpp"
+#include "Render.hpp"
 #include "Input.hpp"
 
 //----------------------------------------------------------------------------//
@@ -10,7 +11,7 @@
 //----------------------------------------------------------------------------//
 
 //!
-class Modules : public System
+class Modules : public NonCopyable
 {
 public:
 
@@ -19,6 +20,8 @@ protected:
 	Time m_time;
 	ResourceCache m_resources;
 	Input m_input;
+	Renderer m_renderer;
+	SceneManager m_sceneManager;
 };
 
 //----------------------------------------------------------------------------//
@@ -26,7 +29,7 @@ protected:
 //----------------------------------------------------------------------------//
 
 //!
-class Application : public Modules, Singleton<Application>
+class Application : public Modules, public Module<Application>
 {
 public:
 	//!

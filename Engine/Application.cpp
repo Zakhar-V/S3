@@ -24,6 +24,7 @@ Application::~Application(void)
 //----------------------------------------------------------------------------//
 void Application::MainLoop(void)
 {
+	SendEvent(SystemEvent::Start);
 	SendEvent(SystemEvent::Startup);
 	while (!m_requireExit)
 	{
@@ -37,6 +38,7 @@ void Application::MainLoop(void)
 		arctic::easy::ShowFrame();
 	}
 	SendEvent(SystemEvent::Shutdown);
+	SendEvent(SystemEvent::Stop);
 }
 //----------------------------------------------------------------------------//
 

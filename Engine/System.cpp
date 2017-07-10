@@ -33,16 +33,16 @@ System::~System(void)
 //----------------------------------------------------------------------------//
 bool System::SendEvent(int _event, void* _arg)
 {
-	/*for (System* i = s_first; i; i = i->m_next)
-	{
-		if (i->OnEvent(_event, _arg))
-			return true;
-	}*/
-	for (System* i = s_last; i; i = i->m_prev)
+	for (System* i = s_first; i; i = i->m_next)
 	{
 		if (i->OnEvent(_event, _arg))
 			return true;
 	}
+	/*for (System* i = s_last; i; i = i->m_prev)
+	{
+		if (i->OnEvent(_event, _arg))
+			return true;
+	}*/
 	return false;
 }
 //----------------------------------------------------------------------------//
