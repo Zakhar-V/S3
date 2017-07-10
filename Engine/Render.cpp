@@ -84,11 +84,8 @@ void Sprite::Load(const char* _filename)
 	Json _desc;
 	_desc.Load(gResources->MakePath(_filename, "json").c_str());
 	
-	Vector2 _pivot;
-	{
-		_pivot.x = _desc["Pivot"][0];
-		_pivot.y = _desc["Pivot"][1];
-	}
+	// _pivot
+	m_pivot = _desc["Pivot"];
 
 	// images
 	{
@@ -98,9 +95,21 @@ void Sprite::Load(const char* _filename)
 		for (uint i = 0; i < _images.Size(); ++i)
 		{
 			ImagePtr _img = gResources->GetResource<Image>(_images[i]);
-			_img->GetData().SetPivot(arctic::Vec2Si32((int)(_img->GetData().Width() * _pivot.x), (int)(_img->GetData().Height() * _pivot.y)));
+			_img->GetData().SetPivot(arctic::Vec2Si32((int)(_img->GetData().Width() * m_pivot.x), (int)(_img->GetData().Height() * m_pivot.y)));
 			m_images.push_back(gResources->GetResource<Image>(_images[i]));
 		}
+	}
+
+	// scale and size
+	{
+		ASSERT(m_images.size() > 0);
+		int _targetHeight = _desc["Height"];
+		if (!_targetHeight)
+			_targetHeight = m_images[0]->GetData().Height();
+		m_scale = (float)_targetHeight / (float)m_images[0]->GetData().Height();
+		m_size.y = (float)_targetHeight;
+		m_size.x = m_images[0]->GetData().Width() * m_scale;
+		m_pivot *= m_size;
 	}
 
 	// aliases
@@ -243,7 +252,7 @@ void SpriteRenderer::Update(void)
 	}
 }
 //----------------------------------------------------------------------------//
-void SpriteRenderer::Draw(const Vector2& _camera)
+void SpriteRenderer::Draw(const Vector2& _camera, float _zoom)
 {
 	if (!m_sprite)
 		return;
@@ -251,28 +260,7 @@ void SpriteRenderer::Draw(const Vector2& _camera)
 	const Transform& _t = m_entity->GetTransform();
 	Image* _img = m_sprite->GetImageByIndex(m_currentFrame);
 
-	_img->GetData().Draw((int)(_t.e + _camera.x), int(_t.f + _camera.y), -_t.Angle(), _t.Scale());
-
-#if 1 // DEBUG DRAW
-	arctic::Rgba _clr = arctic::Rgba(0xff, 0, 0, 0xff);
-	Rect _r;
-	_r.FromSizePivot(_img->GetData().Size(), _img->GetData().Pivot());
-
-	Vector2 _lt = { _r.left, _r.top };
-	Vector2 _lb = { _r.left, _r.bottom };
-	Vector2 _rb = { _r.right, _r.bottom };
-	Vector2 _rt = { _r.right, _r.top };
-
-	_lt = _camera + _t * _lt;
-	_lb = _camera + _t * _lb;
-	_rb = _camera + _t * _rb;
-	_rt = _camera + _t * _rt;
-
-	arctic::easy::DrawLine(_lt, _lb, _clr);
-	arctic::easy::DrawLine(_lb, _rb, _clr);
-	arctic::easy::DrawLine(_rb, _rt, _clr);
-	arctic::easy::DrawLine(_rt, _lt, _clr);
-#endif
+	gRenderer->DrawSprite(m_sprite, m_currentFrame, 0, m_entity->GetTransform(), m_color);
 }
 //----------------------------------------------------------------------------//
 Json SpriteRenderer::Serialize(void)
@@ -304,6 +292,36 @@ void SpriteRenderer::Deserialize(const Json& _src, class ObjectSolver* _context)
 //----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
+// Camera
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+const Vector2& Camera::Position(void)
+{
+	return m_entity->GetTransform().Pos();
+}
+//----------------------------------------------------------------------------//
+float Camera::Zoom(void)
+{
+	return m_entity->GetTransform().Scale();
+}
+//----------------------------------------------------------------------------//
+Json Camera::Serialize(void)
+{
+	Json _dst = RenderComponent::Serialize();
+
+	//...
+
+	return _dst;
+}
+//----------------------------------------------------------------------------//
+void Camera::Deserialize(const Json& _src, class ObjectSolver* _context)
+{
+	RenderComponent::Deserialize(_src, _context);
+}
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
 // RenderWorld
 //----------------------------------------------------------------------------//
 
@@ -316,11 +334,18 @@ void RenderWorld::Register(void)
 
 	// componenets
 	//Object::Register<RenderComponent>();
+	Object::Register<Camera>();
 	Object::Register<SpriteRenderer>();
 
 	// system
 	Object::Register<RenderWorld>();
 	AddDefaultSystem(TypeName, RENDER_PRIORITY);
+}
+//----------------------------------------------------------------------------//
+void RenderWorld::SetCamera(Camera* _camera)
+{
+	if (_camera && _camera->GetScene() == m_scene)
+		m_camera = _camera;
 }
 //----------------------------------------------------------------------------//
 void RenderWorld::_Start(Scene* _scene)
@@ -333,14 +358,17 @@ void RenderWorld::_Stop(void)
 //----------------------------------------------------------------------------//
 void RenderWorld::_AddComponent(Component* _component)
 {
-
 	if (_component->IsTypeOf<RenderComponent>())
 	{
 		RenderComponent* _child = static_cast<RenderComponent*>(_component);
 
 		_child->AddRef();
 		LL_LINK(m_first, _child, m_prevRenderComponent, m_nextRenderComponent);
+
 		//_child->Start();
+		
+		if (_component->IsTypeOf<Camera>() && !m_camera)
+			m_camera = static_cast<Camera*>(_component);
 	}
 }
 //----------------------------------------------------------------------------//
@@ -349,6 +377,9 @@ void RenderWorld::_RemoveComponent(Component* _component)
 	if (_component->IsTypeOf<RenderComponent>())
 	{
 		RenderComponent* _child = static_cast<RenderComponent*>(_component);
+
+		if (_component->IsTypeOf<Camera>() && _component == m_camera)
+			m_camera = nullptr;
 
 		//_child->Destroy();
 		LL_UNLINK(m_first, _child, m_prevRenderComponent, m_nextRenderComponent);
@@ -375,13 +406,15 @@ void RenderWorld::_PostUpdate(void)
 //----------------------------------------------------------------------------//
 void RenderWorld::_Render(void)
 {
-	Vector2 _camera = { 0, 0 };
-
-	// clear screen
+	//m_cameraPos = { 0, 0 };
+	//m_cameraZoom = 1;
+	if (m_camera && m_camera->IsEnabled())
 	{
-		auto _bb = arctic::easy::GetEngine()->GetBackbuffer();
-		memset(_bb.RawData(), 0, _bb.Width() * _bb.Height() * 4);
+		m_cameraPos = m_camera->GetEntity()->GetTransform().Pos();
+		m_cameraZoom = m_camera->GetEntity()->GetTransform().Scale();
 	}
+
+	gRenderer->SetCamera(m_cameraPos, m_cameraZoom);
 
 	m_visibleSet.clear();
 	for (RenderComponent* i = m_first; i; i = i->m_nextRenderComponent)
@@ -403,7 +436,135 @@ void RenderWorld::_Render(void)
 	});
 
 	for (auto i : m_visibleSet)
-		i->Draw(_camera);
+		i->Draw(m_cameraPos);
+}
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+//Renderer
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+Renderer::Renderer(void)
+{
+	_GetBackBuffer();
+}
+//----------------------------------------------------------------------------//
+Renderer::~Renderer(void)
+{
+
+}
+//----------------------------------------------------------------------------//
+bool Renderer::OnEvent(int _type, void* _arg)
+{
+	switch (_type)
+	{
+	case SystemEvent::BeginFrame:
+		_GetBackBuffer();
+		break;
+
+	case SystemEvent::Render:
+	{
+
+		// clear screen
+		{
+			uint* i = (uint*)m_backBuffer;
+			uint* _end = i + m_screenWidth * m_screenHeight;
+			while (i < _end)
+				*i++ = m_backgroundColor.rgba;
+		}
+
+	} break;
+
+	}
+	return false;
+}
+//----------------------------------------------------------------------------//
+void Renderer::SetScreenSize(uint _width, uint _height)
+{
+	arctic::easy::ResizeScreen(_width, _height);
+	_GetBackBuffer();
+}
+//----------------------------------------------------------------------------//
+void Renderer::SetCamera(const Vector2& _pos, float _zoom)
+{	
+	m_cameraPos = _pos;
+	m_cameraZoom = _zoom;
+}
+//----------------------------------------------------------------------------//
+void Renderer::DrawSprite(Sprite* _sprite, uint _frame, uint _targetHeight, const Transform& _transform, const Color4ub& _color)
+{
+
+	Image* _img = _sprite->GetImageByIndex(_frame);
+
+	int _srcWidth = _img->GetData().Width();
+	int _srcHeight = _img->GetData().Height();
+	//_img->GetData().SetPivot(arctic::Vec2Si32((int)_pivot.x * _srcWidth, (int)_pivot.y * _srcHeight));
+
+	float _imgScale = 1;
+	if (_targetHeight)
+	{
+		_imgScale =  (float)_targetHeight / (float)_srcHeight;
+	}
+	else
+	{
+		_imgScale = _sprite->GetScale();
+	}
+	float _scale = _imgScale * _transform.Scale();
+
+	float _angle = _transform.Angle();
+	if (fabsf(_angle) < .1e-3f)
+	{
+		int _width = (int)(_srcWidth * _scale);
+		int _height = (int)(_srcHeight * _scale);
+
+		_img->GetData().Draw(
+			(int)(_transform.e * m_cameraZoom - m_cameraPos.x), (int)(_transform.f * m_cameraZoom - m_cameraPos.y), (int)(_width * m_cameraZoom), (int)(_height * m_cameraZoom), // dst
+			0, 0, _srcWidth, _srcHeight); //src
+	}
+	else
+	{
+		_img->GetData().Draw((int)(_transform.e * m_cameraZoom - m_cameraPos.x), (int)(_transform.f * m_cameraZoom - m_cameraPos.y), -_angle, _scale * m_cameraZoom);
+	}
+
+	// TODO: blend
+
+	if (m_debugDraw & DebugDraw::Bound)
+	{
+		arctic::Rgba _clr = arctic::Rgba(0xff, 0, 0, 0xff);
+		Rect _r;
+		_r.FromSizePivot(_sprite->Size(), _img->GetData().Pivot());
+
+		Vector2 _lt = { _r.left, _r.top };
+		Vector2 _lb = { _r.left, _r.bottom };
+		Vector2 _rb = { _r.right, _r.bottom };
+		Vector2 _rt = { _r.right, _r.top };
+
+		_lt = _transform * _lt * m_cameraZoom - m_cameraPos;
+		_lb = _transform * _lb * m_cameraZoom - m_cameraPos;
+		_rb = _transform * _rb * m_cameraZoom - m_cameraPos;
+		_rt = _transform * _rt * m_cameraZoom - m_cameraPos;
+
+		arctic::easy::DrawLine(_lt, _lb, _clr);
+		arctic::easy::DrawLine(_lb, _rb, _clr);
+		arctic::easy::DrawLine(_rb, _rt, _clr);
+		arctic::easy::DrawLine(_rt, _lt, _clr);
+
+		_clr = arctic::Rgba(0, 0xff, 0, 0xff);
+		Vector2 _c = _transform.Pos() * m_cameraZoom - m_cameraPos;
+		Vector2 _ux = { 5, 0 };
+		Vector2 _uy = { 0, 5 };
+		arctic::easy::DrawLine(_c - _ux, _c + _ux, _clr);
+		arctic::easy::DrawLine(_c - _uy, _c + _uy, _clr);
+	}
+}
+//----------------------------------------------------------------------------//
+void Renderer::_GetBackBuffer(void)
+{
+	auto _bb = arctic::easy::GetEngine()->GetBackbuffer();
+	m_backBuffer = reinterpret_cast<Color4ub*>(_bb.RawData());
+	m_screenWidth = _bb.Width();
+	m_screenHeight = _bb.Height();
 }
 //----------------------------------------------------------------------------//
 
