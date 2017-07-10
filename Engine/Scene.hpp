@@ -18,6 +18,11 @@ class Component abstract : public Object
 public:
 	RTTI("Component");
 
+	enum
+	{
+		Single = 0x1,
+	};
+
 	//!
 	enum class Family
 	{
@@ -38,7 +43,7 @@ public:
 	//!
 	Component* GetNextComponent(void) { return m_nextComponent; }
 	//!
-	template <class T> Component* GetNextComponent(void)
+	template <class T> T* GetNextComponent(void)
 	{
 		for (Component* i = m_nextComponent; i; i = i->m_nextComponent)
 		{
@@ -71,7 +76,17 @@ public:
 protected:
 	friend class Entity;
 
-	virtual void _Bind(Entity* _entity) { m_entity = _entity; }
+	//!
+	virtual void _Bind(void) { }
+	//!
+	virtual void _Unbind(void) { }
+	//!
+	virtual void _Enable(void) { }
+	//!
+	virtual void _Disable(void) { }
+
+	//!
+	void _OnEntityEnable(bool _enable);
 	//!
 	virtual void _OnEntityTransformChanged(void) { }
 	//!
@@ -84,6 +99,7 @@ protected:
 	Component* m_nextComponent = nullptr;
 
 	bool m_enabled = true;
+	bool m_entityEnabled = true;
 	void* m_oldAddress = nullptr;
 };
 
@@ -108,7 +124,7 @@ public:
 	//!
 	Component* GetComponent(uint _type);
 	//!
-	template <class T> T* GetComponent(void) { retrun static_cast<T*>(GetComponent(T::TypeID)); }
+	template <class T> T* GetComponent(void) { return static_cast<T*>(GetComponent(T::TypeID)); }
 
 	//!
 	Scene* GetScene(void) { return m_scene; }

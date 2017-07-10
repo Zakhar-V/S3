@@ -18,12 +18,25 @@ void Component::Destroy(Component* _component)
 //----------------------------------------------------------------------------//
 bool Component::IsEnabled(void)
 {
-	return m_enabled && m_entity->IsEnabled();
+	return m_enabled && m_entityEnabled;
 }
 //----------------------------------------------------------------------------//
 void Component::Enable(bool _enable)
 {
+	bool _oldState = IsEnabled();
 	m_enabled = _enable;
+	bool _newState = IsEnabled();
+	if (_newState != _oldState)
+		_newState ? _Enable() : _Disable();
+}
+//----------------------------------------------------------------------------//
+void Component::_OnEntityEnable(bool _enable)
+{
+	bool _oldState = IsEnabled();
+	m_entityEnabled = _enable;
+	bool _newState = IsEnabled();
+	if (_newState != _oldState)
+		_newState ? _Enable() : _Disable();
 }
 //----------------------------------------------------------------------------//
 Json Component::Serialize(void)
@@ -60,18 +73,41 @@ void Component::SolveObjects(ObjectSolver* _context)
 //----------------------------------------------------------------------------//
 Component* Entity::AddComponent(const char* _typename)
 {
-	ObjectPtr _obj = Object::Create(_typename);
-	if (!_obj || !_obj->IsTypeOf<Component>())
+	Component* _component = nullptr;
+
+	TypeInfo* _typeinfo = Object::GetTypeInfo(_typename);
+	if (_typeinfo && _typeinfo->Factory)
 	{
-		LOG("Error: Unable to add %s component", _typename);
+		if (_typeinfo->flags & Component::Single)
+		{
+			Component* _exists = GetComponent(_typeinfo->type);
+			if (_exists)
+			{
+				LOG("Error: %s is already attached to Entity", _typename);
+				return _exists;
+			}
+		}
+
+		ObjectPtr _obj = Object::Create(_typename);
+		if (!_obj || !_obj->IsTypeOf<Component>())
+		{
+			LOG("Error: Unable to add %s component", _typename);
+			return nullptr;
+		}
+
+		_component = _obj.Cast<Component>();
+		_component->AddRef();
+	}
+	else
+	{
+		LOG("Error: Factory for %s not found", _typename);
 		return nullptr;
 	}
 
-	Component* _component = _obj.Cast<Component>();
 	LL_LINK(m_component, _component, m_prevComponent, m_nextComponent);
 
-	_component->AddRef();
-	_component->_Bind(this);
+	_component->m_entity = this;
+	_component->_Bind();
 
 	if (m_scene)
 		m_scene->_AddComponent(_component);
@@ -88,7 +124,8 @@ void Entity::RemoveComponent(Component* _component)
 
 		LL_UNLINK(m_component, _component, m_prevComponent, m_nextComponent);
 
-		_component->_Bind(nullptr);
+		_component->_Unbind();
+		_component->m_entity = nullptr;
 		_component->Release();
 	}
 }
@@ -204,12 +241,14 @@ void Entity::Enable(bool _enable)
 {
 	bool _oldState = IsEnabled();
 	m_enabled = _enable;
-	if (IsEnabled() != _oldState)
+	bool _newState = IsEnabled();
+	if (_newState != _oldState)
 	{
+		for (Component* i = m_component; i; i = i->m_nextComponent)
+			i->_OnEntityEnable(_newState);
+
 		for (Entity* i = m_child; i; i = i->m_next)
-		{
-			i->_OnParentEnable(IsEnabled());
-		}
+			i->_OnParentEnable(_newState);
 	}
 }
 //----------------------------------------------------------------------------//
@@ -217,12 +256,13 @@ void Entity::_OnParentEnable(bool _enable)
 {
 	bool _oldState = IsEnabled();
 	m_parentEnabled = _enable;
-	if (IsEnabled() != _oldState)
+	bool _newState = IsEnabled();
+	if (_newState != _oldState)
 	{
+		for (Component* i = m_component; i; i = i->m_nextComponent)
+			i->_OnEntityEnable(_newState);
 		for (Entity* i = m_child; i; i = i->m_next)
-		{
-			i->_OnParentEnable(IsEnabled());
-		}
+			i->_OnParentEnable(_newState);
 	}
 }
 //----------------------------------------------------------------------------//
