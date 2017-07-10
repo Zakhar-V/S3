@@ -144,6 +144,7 @@ protected:
 
 
 		m_currentScene = new Scene;
+		gSceneManager->SetCurrentScene(m_currentScene);
 
 		{
 			Json _test;
@@ -194,6 +195,35 @@ protected:
 
 			_test->Serialize().Save(gResources->MakePath("entity2", "json").c_str());
 		}
+
+		// camera
+		{
+			EntityPtr _cameraNode = new Entity;
+			_cameraNode->AddComponent<Camera>();
+			_cameraNode->Scale(2);
+			//_cameraNode->Translate({ 250, 250 });
+			_cameraNode->SetScene(m_currentScene);
+		
+		}
+
+		// create ground
+		{
+			EntityPtr _ground = new Entity;
+			//PhysicsShape* _shape = _ground->AddComponent<PhysicsShape>();
+			//_shape->Create(PhysicsShape::Type::Box,);
+
+			EdgeCollider* _collider = _ground->AddComponent<EdgeCollider>();
+			Body* _body = _ground->AddComponent<Body>();
+
+			_ground->SetScene(m_currentScene);
+
+			_ground->Enable(false);
+		}
+
+		// create rigidbody
+		{
+
+		}
 	}
 	//!
 	void _Shutdown(void)
@@ -210,12 +240,10 @@ protected:
 	//!
 	void _Update(void)
 	{
-		m_currentScene->Update();
 	}
 	//!
 	void _Render(void)
 	{
-		m_currentScene->Render();
 	}
 	//!
 	void _EndFrame(void)
