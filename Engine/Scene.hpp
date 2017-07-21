@@ -4,6 +4,7 @@
 #include "Object.hpp"
 #include "Math.hpp"
 #include "Json.hpp"
+#include "Resource.hpp"
 
 typedef SharedPtr<class Component> ComponentPtr;
 typedef SharedPtr<class Entity> EntityPtr;
@@ -240,6 +241,28 @@ protected:
 };
 
 //----------------------------------------------------------------------------//
+// Prefab
+//----------------------------------------------------------------------------//
+
+class Prefab : public Resource
+{
+public:
+	RTTI("Prefab");
+
+	//!
+	void SetEntity(Entity* _entity);
+	//!
+	Entity* GetEntity(void) { return m_entity; }
+
+	//!
+	void Load(const char* _filename) override;
+
+protected:
+
+	EntityPtr m_entity;
+};
+
+//----------------------------------------------------------------------------//
 // SceneSystem
 //----------------------------------------------------------------------------//
 
@@ -304,7 +327,9 @@ class Scene : public Object
 public:
 	RTTI("Scene");
 
+	//!
 	Scene(void);
+	//!
 	~Scene(void);
 
 	//!
@@ -321,6 +346,12 @@ public:
 
 	//!
 	Entity* GetRoot(void) { return m_root; }
+
+	//!
+	Entity* Spawn(Prefab* _prefab, const Transform& _transform = Transform::Identity);
+	//!
+	Entity* Spawn(const String& _name, const Transform& _transform = Transform::Identity);
+
 
 protected:
 	friend class Entity;
@@ -371,6 +402,9 @@ public:
 	SceneManager(void);
 	//!
 	~SceneManager(void);
+
+	//!
+	static void Register(void);
 
 	//!
 	bool OnEvent(int _type, void* _arg) override;

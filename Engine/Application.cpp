@@ -12,6 +12,7 @@
 //----------------------------------------------------------------------------//
 Application::Application(void)
 {
+	SceneManager::Register();
 	RenderWorld::Register();
 	PhysicsWorld::Register();
 	AudioWorld::Register();

@@ -511,6 +511,31 @@ void Entity::SolveObjects(ObjectSolver* _context)
 //----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
+// Prefab
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
+void Prefab::SetEntity(Entity* _entity)
+{
+	m_entity = _entity;
+}
+//----------------------------------------------------------------------------//
+void Prefab::Load(const char* _filename)
+{
+	LOG("Load Prefab \"%s\"", m_name.c_str());
+
+	if (!m_entity)
+		m_entity = new Entity;
+
+	Json _desc;
+	_desc.Load(gResources->MakePath(_filename, "json").c_str());
+
+	ObjectSolver _solver;
+	m_entity->Deserialize(_desc, &_solver);
+}
+//----------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------//
 // SceneSystem
 //----------------------------------------------------------------------------//
 
@@ -614,6 +639,23 @@ void Scene::_SortSystems(void)
 	});
 }
 //----------------------------------------------------------------------------//
+Entity* Scene::Spawn(Prefab* _prefab, const Transform& _transform)
+{
+	if (_prefab && _prefab->GetEntity())
+	{
+		EntityPtr _e = _prefab->GetEntity()->Clone();
+		_e->SetTransform(_transform);
+		_e->SetScene(this);
+		return _e;
+	}
+	return nullptr;
+}
+//----------------------------------------------------------------------------//
+Entity* Scene::Spawn(const String& _name, const Transform& _transform)
+{
+	return Spawn(gResources->GetResource<Prefab>(_name), _transform);
+}
+//----------------------------------------------------------------------------//
 void Scene::_Update(void)
 {
 	for (auto i : m_systemOrder)
@@ -702,6 +744,11 @@ SceneManager::SceneManager(void)
 SceneManager::~SceneManager(void)
 {
 
+}
+//----------------------------------------------------------------------------//
+void SceneManager::Register(void)
+{
+	Object::Register<Prefab>();
 }
 //----------------------------------------------------------------------------//
 bool SceneManager::OnEvent(int _type, void* _arg)
