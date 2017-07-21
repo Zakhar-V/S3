@@ -214,6 +214,26 @@ void Entity::SetParent(Entity* _parent, bool _keepWorldTransform)
 		Release();
 }
 //----------------------------------------------------------------------------//
+Entity* Entity::FindChild(const String& _name, bool _recursive)
+{
+	for (Entity* i = m_child; i; i = i->m_next)
+	{
+		if (i->m_name == _name)
+			return i;
+	}
+
+	if (_recursive)
+	{
+		for (Entity* i = m_child; i; i = i->m_next)
+		{
+			Entity* _child = i->FindChild(_name, true);
+			if (_child)
+				return _child;
+		}
+	}
+	return nullptr;
+}
+//----------------------------------------------------------------------------//
 Entity* Entity::AddChild(void)
 {
 	EntityPtr _child = new Entity;
@@ -390,6 +410,7 @@ EntityPtr Entity::Clone(void)
 	EntityPtr _clone = new Entity;
 
 	_clone->SetTransform(GetTransform());
+	_clone->m_name = m_name;
 	// TODO: flags & layers
 
 	for (Component* i = m_component; i; i = i->m_nextComponent)
@@ -414,6 +435,7 @@ Json Entity::Serialize(void)
 	Json _dst;
 
 	_dst["Type"] = GetTypeName();
+	_dst["Name"] = m_name;
 	_dst["Address"] = (uintptr_t)(void*)this;
 	_dst["Enabled"] = m_enabled;
 	_dst["Position"] = m_pos;
@@ -446,6 +468,7 @@ void Entity::Deserialize(const Json& _src, class ObjectSolver* _context)
 {
 	// TODO: cleanup
 
+	m_name = _src["Name"];
 	m_oldAddress = (void*)(uintptr_t)_src["Address"];
 	Enable(_src["Enabled"]);
 	SetPosition(_src["Position"]);

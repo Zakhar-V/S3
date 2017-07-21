@@ -118,6 +118,11 @@ public:
 	RTTI("Entity");
 
 	//!
+	void SetName(const String& _name) { m_name = _name; }
+	//!
+	const String& GetName(void) { return m_name; }
+
+	//!
 	Component* AddComponent(const char* _typename);
 	//!
 	template <class T> T* AddComponent(void) { return static_cast<T*>(AddComponent(T::TypeName)); }
@@ -144,6 +149,8 @@ public:
 	Entity* GetNextEntity(void) { return m_next; }
 	//!
 	Entity* GetChild(void) { return m_child; }
+	//!
+	Entity* FindChild(const String& _name, bool _recursive = true);
 	//!
 	Entity* AddChild(void);
 
@@ -206,6 +213,8 @@ protected:
 	void _InvalidateTransform(void);
 	//!
 	void _UpdateTransform(void);
+
+	String m_name;
 
 	Scene* m_scene = nullptr;
 
