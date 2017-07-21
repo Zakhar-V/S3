@@ -141,6 +141,7 @@ public:
 		float zoom = 1;
 	};
 
+
 	//!
 	const Vector2& Position(void);
 	//!
@@ -150,6 +151,9 @@ public:
 	void SetBackgroundColor(const Color4ub& _color) { m_backgroundColor = _color; }
 	//!
 	const Color4ub& GetBackgroundColor(void) { return m_backgroundColor; }
+
+	//!
+	void Clone(Component* _src) override;
 
 	//!
 	Json Serialize(void) override;
@@ -196,6 +200,9 @@ public:
 	void Update(void) override;
 	//!
 	void Draw(const Vector2& _camera, float _zoom = 1) override;
+
+	//!
+	void Clone(Component* _src) override;
 
 	//!
 	Json Serialize(void) override;
@@ -325,6 +332,13 @@ public:
 	void SetCamera(const Vector2& _pos, float _zoom = 1);
 	//!
 	void DrawSprite(Sprite* _sprite, uint _frame,uint _targetHeight, const Transform& _transform, const Color4ub& _color = { 0xff, 0xff, 0xff, 0xff });
+	
+	//!
+	void DrawLine(const Vector2& _start, const Vector2& _end, const Color4ub& _color);
+	//!
+	void DrawWireCircle(const Vector2& _center, float _radius, const Color4ub& _color);
+	//!
+	void DrawCross(const Vector2& _center, float _size, const Color4ub& _color);
 
 protected:
 	//!

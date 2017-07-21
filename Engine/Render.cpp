@@ -263,6 +263,21 @@ void SpriteRenderer::Draw(const Vector2& _camera, float _zoom)
 	gRenderer->DrawSprite(m_sprite, m_currentFrame, 0, m_entity->GetTransform(), m_color);
 }
 //----------------------------------------------------------------------------//
+void SpriteRenderer::Clone(Component* _src)
+{
+	RenderComponent::Clone(_src);
+
+	if (_src->IsTypeOf<SpriteRenderer>())
+	{
+		SpriteRenderer* _sp = static_cast<SpriteRenderer*>(_src);
+
+		m_sprite = _sp->m_sprite;
+		m_play = false;
+
+		//TODO: animation state
+	}
+}
+//----------------------------------------------------------------------------//
 Json SpriteRenderer::Serialize(void)
 {
 	Json _dst = RenderComponent::Serialize();
@@ -304,6 +319,18 @@ const Vector2& Camera::Position(void)
 float Camera::Zoom(void)
 {
 	return m_entity->GetTransform().Scale();
+}
+//----------------------------------------------------------------------------//
+void Camera::Clone(Component* _src)
+{
+	RenderComponent::Clone(_src);
+
+	if (_src->IsTypeOf<Camera>())
+	{
+		Camera* _camera = static_cast<Camera*>(_src);
+
+		//...
+	}
 }
 //----------------------------------------------------------------------------//
 Json Camera::Serialize(void)
@@ -527,8 +554,6 @@ void Renderer::DrawSprite(Sprite* _sprite, uint _frame, uint _targetHeight, cons
 		_img->GetData().Draw((int)(_transform.e * m_cameraZoom - m_cameraPos.x), (int)(_transform.f * m_cameraZoom - m_cameraPos.y), -_angle, _scale * m_cameraZoom);
 	}
 
-	// TODO: blend
-
 	if (m_debugDraw & DebugDraw::Bound)
 	{
 		arctic::Rgba _clr = arctic::Rgba(0xff, 0, 0, 0xff);
@@ -550,13 +575,38 @@ void Renderer::DrawSprite(Sprite* _sprite, uint _frame, uint _targetHeight, cons
 		arctic::easy::DrawLine(_rb, _rt, _clr);
 		arctic::easy::DrawLine(_rt, _lt, _clr);
 
-		_clr = arctic::Rgba(0, 0xff, 0, 0xff);
-		Vector2 _c = _transform.Pos() * m_cameraZoom - m_cameraPos;
-		Vector2 _ux = { 5, 0 };
-		Vector2 _uy = { 0, 5 };
-		arctic::easy::DrawLine(_c - _ux, _c + _ux, _clr);
-		arctic::easy::DrawLine(_c - _uy, _c + _uy, _clr);
+		DrawCross(_transform.Pos(), 10, _clr);
 	}
+}
+//----------------------------------------------------------------------------//
+void Renderer::DrawLine(const Vector2& _start, const Vector2& _end, const Color4ub& _color)
+{
+	arctic::easy::DrawLine(_start * m_cameraZoom - m_cameraPos, _end * m_cameraZoom - m_cameraPos, _color);
+}
+//----------------------------------------------------------------------------//
+void Renderer::DrawWireCircle(const Vector2& _center, float _radius, const Color4ub& _color)
+{
+	const uint _segments = 32;
+
+	float _invS = 1.0f / _segments;
+	float _sAngle = 2 * PI * _invS;
+
+	Vector2 _current, _prev = Vector2(0, 1) * _radius + _center;
+	for (int i = 0; i <= _segments; i++)
+	{
+		float _a = i * _sAngle;
+		_current.x = sinf(_a) * _radius + _center.x;
+		_current.y = cosf(_a) * _radius + _center.y;
+		DrawLine(_prev, _current, _color);
+		_prev = _current;
+	}
+}
+//----------------------------------------------------------------------------//
+void Renderer::DrawCross(const Vector2& _center, float _size, const Color4ub& _color)
+{
+	_size *= .5f;
+	DrawLine(_center - Vector2(_size, 0), _center + Vector2(_size, 0), _color);
+	DrawLine(_center - Vector2(0, _size), _center + Vector2(0, _size), _color);
 }
 //----------------------------------------------------------------------------//
 void Renderer::_GetBackBuffer(void)
