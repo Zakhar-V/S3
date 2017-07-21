@@ -1,4 +1,14 @@
 {
+	"MoveX" : {
+		"Type" : "Button",
+		"Negative" : "A",
+		"NegativeAlt" : "Left",
+		"Positive" : "D",
+		"PositiveAlt" : "Right",
+		"Axis" : 0,
+		"Sensitivity" : 1.000000,
+		"Invert" : false
+	},
 	"MouseX" : {
 		"Type" : "Mouse",
 		"Negative" : "None",
@@ -9,12 +19,12 @@
 		"Sensitivity" : 1.000000,
 		"Invert" : false
 	},
-	"MoveX" : {
+	"MoveY" : {
 		"Type" : "Button",
-		"Negative" : "A",
-		"NegativeAlt" : "Left",
-		"Positive" : "D",
-		"PositiveAlt" : "Right",
+		"Negative" : "S",
+		"NegativeAlt" : "Down",
+		"Positive" : "W",
+		"PositiveAlt" : "Up",
 		"Axis" : 0,
 		"Sensitivity" : 1.000000,
 		"Invert" : false
@@ -26,16 +36,6 @@
 		"Positive" : "None",
 		"PositiveAlt" : "None",
 		"Axis" : 1,
-		"Sensitivity" : 1.000000,
-		"Invert" : false
-	},
-	"MoveY" : {
-		"Type" : "Button",
-		"Negative" : "S",
-		"NegativeAlt" : "Down",
-		"Positive" : "W",
-		"PositiveAlt" : "Up",
-		"Axis" : 0,
 		"Sensitivity" : 1.000000,
 		"Invert" : false
 	},
