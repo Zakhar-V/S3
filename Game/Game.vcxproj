@@ -167,7 +167,20 @@
   <ItemGroup>
     <None Include="Data\Input.json" />
     <None Include="Data\InputDefaults.json" />
+    <None Include="Data\Maps\0.json" />
+    <None Include="Data\Objects\Clone.json" />
+    <None Include="Data\Objects\Decal1.json" />
+    <None Include="Data\Objects\Decal2.json" />
+    <None Include="Data\Objects\Tile1.json" />
+    <None Include="Data\Objects\Tile2.json" />
+    <None Include="Data\Sprites\Clone.json" />
+    <None Include="Data\Sprites\Clone_Bullet.json" />
+    <None Include="Data\Sprites\Clone_Fire.json" />
+    <None Include="Data\Sprites\Decal1.json" />
+    <None Include="Data\Sprites\Decal2.json" />
     <None Include="Data\Sprites\Test.json" />
+    <None Include="Data\Sprites\Tile1.json" />
+    <None Include="Data\Sprites\Tile2.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

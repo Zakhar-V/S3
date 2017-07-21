@@ -10,6 +10,12 @@
     <Filter Include="Data\Sprites">
       <UniqueIdentifier>{e5e54b30-943e-4fb6-bb6e-3db0376dadba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data\Objects">
+      <UniqueIdentifier>{bd603947-4bdb-4e1b-b100-2cc69e47528b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Maps">
+      <UniqueIdentifier>{7189519b-0901-497c-8e3f-5a2a1fb55787}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -25,6 +31,45 @@
     </None>
     <None Include="Data\InputDefaults.json">
       <Filter>Data</Filter>
+    </None>
+    <None Include="Data\Sprites\Clone.json">
+      <Filter>Data\Sprites</Filter>
+    </None>
+    <None Include="Data\Sprites\Clone_Bullet.json">
+      <Filter>Data\Sprites</Filter>
+    </None>
+    <None Include="Data\Sprites\Clone_Fire.json">
+      <Filter>Data\Sprites</Filter>
+    </None>
+    <None Include="Data\Sprites\Tile2.json">
+      <Filter>Data\Sprites</Filter>
+    </None>
+    <None Include="Data\Sprites\Decal1.json">
+      <Filter>Data\Sprites</Filter>
+    </None>
+    <None Include="Data\Sprites\Decal2.json">
+      <Filter>Data\Sprites</Filter>
+    </None>
+    <None Include="Data\Sprites\Tile1.json">
+      <Filter>Data\Sprites</Filter>
+    </None>
+    <None Include="Data\Objects\Tile2.json">
+      <Filter>Data\Objects</Filter>
+    </None>
+    <None Include="Data\Objects\Clone.json">
+      <Filter>Data\Objects</Filter>
+    </None>
+    <None Include="Data\Objects\Decal1.json">
+      <Filter>Data\Objects</Filter>
+    </None>
+    <None Include="Data\Objects\Decal2.json">
+      <Filter>Data\Objects</Filter>
+    </None>
+    <None Include="Data\Objects\Tile1.json">
+      <Filter>Data\Objects</Filter>
+    </None>
+    <None Include="Data\Maps\0.json">
+      <Filter>Data\Maps</Filter>
     </None>
   </ItemGroup>
 </Project>
