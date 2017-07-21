@@ -36,6 +36,7 @@ public:
 	//!
 	virtual Family GetFamily(void) = 0;
 
+
 	//!
 	Entity* GetEntity(void) { return m_entity; }
 	//!
@@ -64,6 +65,9 @@ public:
 
 	//!
 	virtual void OnEvent(int _event, void* _arg = nullptr) { }
+
+	//!
+	virtual void Clone(Component* _src) { }
 
 	//!
 	bool IsSerializable(void) override { return true; }
@@ -180,6 +184,9 @@ public:
 	void BroadcastEvent(int _event, void* _arg = nullptr);
 
 	//!
+	EntityPtr Clone(void);
+
+	//!
 	bool IsSerializable(void) override { return true; }
 	//!
 	Json Serialize(void) override;
@@ -268,6 +275,10 @@ protected:
 	virtual void _PostUpdate(void) { }
 	//!
 	virtual void _Render(void) { }
+	//!
+	virtual void _PostRender(void) { }
+	//!
+	virtual void _DebugDraw(void) { }
 
 	Scene* m_scene = nullptr;
 	int m_priority = 0;
@@ -327,6 +338,10 @@ protected:
 	void _PostUpdate(void);
 	//!
 	void _Render(void);
+	//!
+	void _PostRender(void);
+	//!
+	void _DebugDraw(void);
 
 	HashMap<uint, SceneSystemPtr> m_systems;
 	Array<SceneSystem*> m_systemOrder;

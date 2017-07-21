@@ -385,6 +385,30 @@ void Entity::BroadcastEvent(int _event, void* _arg)
 	}
 }
 //----------------------------------------------------------------------------//
+EntityPtr Entity::Clone(void)
+{
+	EntityPtr _clone = new Entity;
+
+	_clone->SetTransform(GetTransform());
+	// TODO: flags & layers
+
+	for (Component* i = m_component; i; i = i->m_nextComponent)
+	{
+		Component* _dst = _clone->AddComponent(i->GetTypeName());
+		_dst->Clone(i);
+	}
+
+	for (Entity* i = m_child; i; i = i->m_next)
+	{
+		EntityPtr _child = i->Clone();
+		_child->SetParent(_clone);
+	}
+
+	_clone->SetScene(m_scene); //
+
+	return _clone;
+}
+//----------------------------------------------------------------------------//
 Json Entity::Serialize(void)
 {
 	Json _dst;
@@ -585,6 +609,18 @@ void Scene::_Render(void)
 		i->_Render();
 }
 //----------------------------------------------------------------------------//
+void Scene::_PostRender(void)
+{
+	for (auto i : m_systemOrder)
+		i->_PostRender();
+}
+//----------------------------------------------------------------------------//
+void Scene::_DebugDraw(void)
+{
+	for (auto i : m_systemOrder)
+		i->_DebugDraw();
+}
+//----------------------------------------------------------------------------//
 void Scene::_LinkRootEntity(Entity* _entity)
 {
 	LL_LINK(m_root, _entity, m_prev, m_next);
@@ -662,6 +698,16 @@ bool SceneManager::OnEvent(int _type, void* _arg)
 	case SystemEvent::Render:
 		if (m_currentScene)
 			m_currentScene->_Render();
+		break;
+
+	case SystemEvent::PostRender:
+		if (m_currentScene)
+			m_currentScene->_PostRender();
+		break;
+
+	case SystemEvent::DebugDraw:
+		if (m_currentScene)
+			m_currentScene->_DebugDraw();
 		break;
 
 	}
