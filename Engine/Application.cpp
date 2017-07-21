@@ -33,6 +33,7 @@ void Application::MainLoop(void)
 		SendEvent(SystemEvent::PostUpdate);
 		SendEvent(SystemEvent::Render);
 		SendEvent(SystemEvent::PostRender);
+		SendEvent(SystemEvent::DebugDraw);
 		SendEvent(SystemEvent::EndFrame);
 
 		arctic::easy::ShowFrame();
