@@ -1,4 +1,5 @@
 #include "Physics.hpp"
+#include "Render.hpp"
 
 //----------------------------------------------------------------------------//
 // Collider
@@ -20,6 +21,46 @@ void Collider::SetCenter(const Vector2& _center)
 		m_center = _center;
 		_UpdateShape();
 	}
+}
+//----------------------------------------------------------------------------//
+void Collider::Clone(Component* _src)
+{
+	PhysicsComponent::Clone(_src);
+
+	if (_src->IsTypeOf<Collider>())
+	{
+		Collider* _c = static_cast<Collider*>(_src);
+
+		m_center = _c->m_center;
+		m_friction = _c->m_friction;
+		m_restitution = _c->m_restitution;
+		m_density = _c->m_density;
+		m_trigger = _c->m_trigger;
+	}
+}
+//----------------------------------------------------------------------------//
+Json Collider::Serialize(void)
+{
+	Json _dst = PhysicsComponent::Serialize();
+
+	_dst["Center"] = m_center;
+	_dst["Friction"] = m_friction;
+	_dst["Restitution"] = m_restitution;
+	_dst["Density"] = m_density;
+	_dst["IsTrigger"] = m_trigger;
+
+	return _dst;
+}
+//----------------------------------------------------------------------------//
+void Collider::Deserialize(const Json& _src, class ObjectSolver* _context)
+{
+	PhysicsComponent::Deserialize(_src, _context);
+
+	m_center = _src["Center"];
+	m_friction = _src["Friction"];
+	m_restitution = _src["Restitution"];
+	m_density = _src["Density"];
+	m_trigger = _src["IsTrigger"];
 }
 //----------------------------------------------------------------------------//
 void Collider::_Bind(void)
@@ -85,6 +126,13 @@ void Collider::_UpdateFilter(void)
 	m_fixture->SetFilterData(_filter);
 }
 //----------------------------------------------------------------------------//
+void Collider::_DebugDraw(void)
+{
+	Color4ub _clr = { 0x7f, 0x7f, 0x7f, 0xff };
+	const Transform& _t = m_entity->GetTransform();
+	gRenderer->DrawCross(_t * m_center, 7, _clr);
+}
+//----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
 // CircleCollider
@@ -97,6 +145,36 @@ void CircleCollider::SetRadius(float _radius)
 	_UpdateShape();
 }
 //----------------------------------------------------------------------------//
+void CircleCollider::Clone(Component* _src)
+{
+	Collider::Clone(_src);
+
+	if (_src->IsTypeOf<CircleCollider>())
+	{
+		CircleCollider* _c = static_cast<CircleCollider*>(_src);
+
+		m_radius = _c->m_radius;
+		_UpdateShape();
+	}
+}
+//----------------------------------------------------------------------------//
+Json CircleCollider::Serialize(void)
+{
+	Json _dst = Collider::Serialize();
+
+	_dst["Radius"] = m_radius;
+
+	return _dst;
+}
+//----------------------------------------------------------------------------//
+void CircleCollider::Deserialize(const Json& _src, class ObjectSolver* _context)
+{
+	Collider::Deserialize(_src, _context);
+
+	m_radius = _src["Radius"];
+	_UpdateShape();
+}
+//----------------------------------------------------------------------------//
 void CircleCollider::_UpdateShape(void)
 {
 	m_shape.m_p = { m_center.x, m_center.y };
@@ -105,7 +183,10 @@ void CircleCollider::_UpdateShape(void)
 //----------------------------------------------------------------------------//
 void CircleCollider::_DebugDraw(void)
 {
-
+	Collider::_DebugDraw();
+	Color4ub _clr = { 0x7f, 0x7f, 0x7f, 0xff };
+	const Transform& _t = m_entity->GetTransform();
+	gRenderer->DrawWireCircle(_t * m_center, m_radius * _t.Scale(), _clr);
 }
 //----------------------------------------------------------------------------//
 
@@ -160,7 +241,8 @@ void EdgeCollider::_UpdateShape(void)
 //----------------------------------------------------------------------------//
 void EdgeCollider::_DebugDraw(void)
 {
-
+	const Transform& _t = m_entity->GetTransform();
+	gRenderer->DrawLine(_t * m_points[0], _t * m_points[1], { 0x7f, 0x7f, 0x7f, 0xff });
 }
 //----------------------------------------------------------------------------//
 
@@ -265,6 +347,14 @@ void Body::_Destroy(void)
 	m_body = nullptr;
 }
 //----------------------------------------------------------------------------//
+void Body::_DebugDraw(void)
+{
+	for (Collider* i = m_entity->GetComponent<Collider>(); i; i = i->GetNextComponent<Collider>())
+	{
+		i->_DebugDraw();
+	}
+}
+//----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
 // PhysicsWorld
@@ -298,7 +388,7 @@ PhysicsWorld::~PhysicsWorld(void)
 //----------------------------------------------------------------------------//
 void PhysicsWorld::_Start(Scene* _scene)
 {
-
+	m_scene = _scene;
 }
 //----------------------------------------------------------------------------//
 void PhysicsWorld::_Stop(void)
@@ -349,6 +439,22 @@ void PhysicsWorld::_Update(void)
 //----------------------------------------------------------------------------//
 void PhysicsWorld::_PostUpdate(void)
 {
+}
+//----------------------------------------------------------------------------//
+void PhysicsWorld::_DebugDraw(void)
+{
+	if (gRenderer->GetDebugDraw() & DebugDraw::Collider)
+	{
+		Camera* _camera = m_scene->GetSystem<RenderWorld>()->GetCamera();
+		if (_camera)
+			gRenderer->SetCamera(_camera->Position(), _camera->Zoom());
+
+		for (Body* i = m_firstBody; i; i = i->m_nextBody)
+		{
+			if(i->IsEnabled())
+				i->_DebugDraw();
+		}
+	}
 }
 //----------------------------------------------------------------------------//
 void PhysicsWorld::BeginContact(b2Contact* _contact)

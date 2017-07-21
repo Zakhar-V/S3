@@ -49,7 +49,15 @@ public:
 	//!
 	b2Fixture* _Handle(void) { return m_fixture; }
 	//!
-	virtual void _DebugDraw(void) { }
+	virtual void _DebugDraw(void);
+
+	//!
+	void Clone(Component* _src) override;
+
+	//!
+	Json Serialize(void) override;
+	//!
+	void Deserialize(const Json& _src, class ObjectSolver* _context = nullptr) override;
 
 protected:
 	friend class Body;
@@ -100,6 +108,14 @@ public:
 
 	//!
 	void _DebugDraw(void) override;
+
+	//!
+	void Clone(Component* _src) override;
+
+	//!
+	Json Serialize(void) override;
+	//!
+	void Deserialize(const Json& _src, class ObjectSolver* _context = nullptr) override;
 
 protected:
 	//!
@@ -246,6 +262,8 @@ protected:
 	void _Create(void);
 	//!
 	void _Destroy(void);
+	//!
+	void _DebugDraw(void);
 
 	Body* m_prevBody = nullptr;
 	Body* m_nextBody = nullptr;
@@ -286,6 +304,8 @@ protected:
 	void _Update(void) override;
 	//!
 	void _PostUpdate(void) override;
+	//!
+	void _DebugDraw(void) override;
 
 	//!
 	void BeginContact(b2Contact* _contact) override;
