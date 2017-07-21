@@ -375,6 +375,16 @@ void RenderWorld::SetCamera(Camera* _camera)
 		m_camera = _camera;
 }
 //----------------------------------------------------------------------------//
+Vector2 RenderWorld::ScreenToWorld(const Vector2& _screen)
+{
+	return _screen / m_cameraZoom + m_cameraPos;
+}
+//----------------------------------------------------------------------------//
+Vector2 RenderWorld::WorldToScreen(const Vector2& _world)
+{
+	return _world * m_cameraZoom - m_cameraPos;
+}
+//----------------------------------------------------------------------------//
 void RenderWorld::_Start(Scene* _scene)
 {
 }
@@ -480,6 +490,10 @@ void RenderWorld::_Render(void)
 
 	for (auto i : m_visibleSet)
 		i->Draw(m_cameraPos);
+}
+//----------------------------------------------------------------------------//
+void RenderWorld::_DebugDraw(void)
+{
 }
 //----------------------------------------------------------------------------//
 

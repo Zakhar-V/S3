@@ -243,6 +243,11 @@ public:
 	//!
 	float GetCameraZoom(void) { return m_cameraZoom; }
 
+	//!
+	Vector2 ScreenToWorld(const Vector2& _screen);
+	//!
+	Vector2 WorldToScreen(const Vector2& _world);
+
 protected:
 	friend class Camera;
 	//!
@@ -259,6 +264,8 @@ protected:
 	void _PostUpdate(void) override;
 	//!
 	void _Render(void) override;
+	//!
+	void _DebugDraw(void) override;
 
 	RenderComponent* m_first = nullptr;
 	Array<RenderComponent*> m_visibleSet;
