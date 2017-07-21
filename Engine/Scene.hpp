@@ -68,7 +68,7 @@ public:
 	virtual void OnEvent(int _event, void* _arg = nullptr) { }
 
 	//!
-	virtual void Clone(Component* _src) { }
+	virtual void Clone(Component* _src);
 
 	//!
 	bool IsSerializable(void) override { return true; }
@@ -133,6 +133,9 @@ public:
 	Entity* GetPrefab(void) { return m_prefab; }
 
 	//!
+
+
+	//!
 	Component* AddComponent(const char* _typename);
 	//!
 	template <class T> T* AddComponent(void) { return static_cast<T*>(AddComponent(T::TypeName)); }
@@ -174,7 +177,14 @@ public:
 
 	//!
 	int GetDepth(void) { return m_depth; }
-
+	//!
+	void SetLayer(int _layer) { m_layer = _layer; }
+	//!
+	int GetLayer(void) { return m_layer; }
+	//!
+	void SetPriority(int _priority) { m_priority = _priority; }
+	//!
+	int GetPriority(void) { return m_priority; }
 
 	//! Add local rotation
 	void Rotate(float _r);
@@ -241,6 +251,8 @@ protected:
 	bool m_parentEnabled = true;
 
 	int m_depth = 0;
+	int m_layer = 0;
+	int m_priority = 0;
 
 	bool m_transformUpdated = true;
 	float m_scale = 1; //!< local scale

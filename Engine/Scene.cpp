@@ -39,6 +39,11 @@ void Component::_OnEntityEnable(bool _enable)
 		_newState ? _Enable() : _Disable();
 }
 //----------------------------------------------------------------------------//
+void Component::Clone(Component* _src)
+{
+	Enable(_src->m_enabled);
+}
+//----------------------------------------------------------------------------//
 Json Component::Serialize(void)
 {
 	Json _dst;
@@ -412,7 +417,8 @@ EntityPtr Entity::Clone(void)
 	_clone->SetTransform(GetTransform());
 	_clone->m_name = m_name;
 	_clone->m_prefab = m_prefab ? m_prefab : this;
-	// TODO: flags & layers
+	_clone->m_layer = m_layer;
+	_clone->m_priority = m_priority;
 
 	for (Component* i = m_component; i; i = i->m_nextComponent)
 	{
@@ -442,7 +448,9 @@ Json Entity::Serialize(void)
 	_dst["Position"] = m_pos;
 	_dst["Scale"] = m_scale;
 	_dst["Angle"] = m_angle * Rad2Deg;
-	//TODO: save name and local ID
+	_dst["Layer"] = m_layer;
+	_dst["Priority"] = m_priority;
+	//TODO: local ID
 
 	{
 		Json& _components = _dst["Components"];
@@ -467,6 +475,8 @@ Json Entity::Serialize(void)
 					_external["Position"] = i->m_pos;
 					_external["Scale"] = i->m_scale;
 					_external["Angle"] = i->m_angle * Rad2Deg;
+					_external["Layer"] = i->m_layer;
+					_external["Priority"] = i->m_priority;
 					_children.Push(_external);
 				}
 				else
@@ -490,6 +500,8 @@ void Entity::Deserialize(const Json& _src, class ObjectSolver* _context)
 	SetPosition(_src["Position"]);
 	SetScale(_src["Scale"]);
 	SetRotation(_src["Angle"].AsFloat() * Deg2Rad);
+	SetLayer(_src["Layer"]);
+	SetPriority(_src["Priority"]);
 
 	if (_context)
 	{
@@ -522,6 +534,8 @@ void Entity::Deserialize(const Json& _src, class ObjectSolver* _context)
 				Transform _transform(_desc["Position"][0], _desc["Position"][1], _desc["Scale"], _desc["Angle"].AsFloat() * Deg2Rad);
 				_child->SetTransform(_transform);
 				_child->Enable(_desc["Enabled"]);
+				_child->SetLayer(_desc["Layer"]);
+				_child->SetPriority(_desc["Priority"]);
 				_child->SetParent(this, false);
 
 				//if (_context) _context->AddObject(_child, _prefab->GetEntity()->m_oldAddress);  // ???

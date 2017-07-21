@@ -455,11 +455,27 @@ void RenderWorld::_Render(void)
 	std::sort(m_visibleSet.begin(), m_visibleSet.end(),
 		[](RenderComponent* _lhs, RenderComponent* _rhs)
 	{
-		// TODO: use priority and layers
+		int _lhsLayer = _lhs->GetEntity()->GetLayer();
+		int _rhsLayer = _rhs->GetEntity()->GetLayer();
+		if (_lhsLayer < _rhsLayer)
+			return true;
 
-		int _lhsDepth = _lhs->GetEntity()->GetDepth();
-		int _rhsDepth = _rhs->GetEntity()->GetDepth();
-		return _lhsDepth < _rhsDepth;
+		if (_lhsLayer == _rhsLayer)
+		{
+			int _lhsPriority = _lhs->GetEntity()->GetPriority();
+			int _rhsPriority = _rhs->GetEntity()->GetPriority();
+			if (_lhsPriority < _rhsPriority)
+				return true;
+
+			if (_lhsPriority == _rhsPriority)
+			{
+				int _lhsDepth = _lhs->GetEntity()->GetDepth();
+				int _rhsDepth = _rhs->GetEntity()->GetDepth();
+				return _lhsDepth < _rhsDepth;
+			}
+		}
+
+		return false;
 	});
 
 	for (auto i : m_visibleSet)
