@@ -1,0 +1,54 @@
+{
+	"Type" : "Entity",
+	"Name" : "",
+	"Address" : 17769000,
+	"Enabled" : true,
+	"Position" : [0.000000, 0.000000],
+	"Scale" : 1.000000,
+	"Angle" : 0.000000,
+  "Layer": 0,
+	"Components" : null,
+	"Children" : [
+    {
+      "Prefab": "Objects/Tile1",
+      "Layer": 0,
+      "Enabled": true,
+      "Position": [ 0.000000, 0.000000 ],
+      "Scale": 1.000000,
+      "Angle": 0.000000
+    },		
+    {
+			"Prefab" : "Objects/Tile1",
+      "Layer": 0,
+			"Enabled" : true,
+			"Position" : [0.000000, 837.000000],
+			"Scale" : 1.000000,
+			"Angle" : 0.000000
+		},
+    {
+			"Prefab" : "Objects/Tile1",
+      "Layer": 0,
+			"Enabled" : true,
+			"Position" : [837.000000, 0.000000],
+			"Scale" : 1.000000,
+			"Angle" : 0.000000
+		},
+		{
+			"Prefab" : "Objects/Tile1",
+      "Layer": 0,
+			"Enabled" : true,
+			"Position" : [837.000000, 837.000000],
+			"Scale" : 1.000000,
+			"Angle" : 0.000000
+		},
+		{
+			"Prefab" : "Objects/Decal1",
+      "Layer": 0,
+      "Priority": 1,
+			"Enabled" : true,
+			"Position" : [200.000000, 350.000000],
+			"Scale" : 1.000000,
+			"Angle" : 0.000000
+		}
+	]
+}

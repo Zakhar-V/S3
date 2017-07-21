@@ -1,0 +1,22 @@
+{
+	"Type" : "Entity",
+	"Name" : "",
+	"Address" : 7666896,
+	"Enabled" : true,
+	"Position" : [0.000000, 0.000000],
+	"Scale" : 1.000000,
+	"Angle" : 0.000000,
+	"Components" : [
+		{
+			"Type" : "SpriteRenderer",
+			"Address" : 7292216,
+			"Enabled" : true,
+			"Sprite" : "Sprites/Decal2",
+			"Animation" : "",
+			"Speed" : 1.000000,
+			"Time" : 0.000000,
+			"Play" : false
+		}
+	],
+	"Children" : null
+}
