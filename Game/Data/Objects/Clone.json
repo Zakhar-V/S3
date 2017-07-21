@@ -1,0 +1,65 @@
+{
+	"Type" : "Entity",
+	"Address" : 122210912,
+	"Enabled" : true,
+	"Position" : [0.000000, 0.000000],
+	"Scale" : 1.000000,
+	"Angle" : 0.000000,
+	"Components" : [
+		{
+			"Type" : "SpriteRenderer",
+			"Address" : 14356944,
+			"Enabled" : true,
+			"Sprite" : "Sprites/Clone",
+			"Animation" : "",
+			"Speed" : 1.000000,
+			"Time" : 0.000000,
+			"Play" : false
+		},
+		{
+			"Type" : "CircleCollider",
+			"Address" : 122211456,
+			"Enabled" : true,
+			"Center" : [0.000000, 0.000000],
+			"Friction" : 0.200000,
+			"Restitution" : 0.000000,
+			"Density" : 0.000000,
+			"IsTrigger" : false,
+			"Radius" : 45.000000
+		},
+		{
+			"Type" : "Body",
+			"Address" : 14429272,
+			"Enabled" : true
+		},
+		{
+			"Type" : "Rotate",
+			"Address" : 14429976,
+			"Enabled" : true,
+			"Speed" : 1.000000
+		}
+	],
+	"Children" : [
+		{
+			"Type" : "Entity",
+			"Address" : 122211592,
+			"Enabled" : true,
+			"Position" : [15.000000, 75.000000],
+			"Scale" : 1.000000,
+			"Angle" : 0.000000,
+			"Components" : [
+				{
+					"Type" : "SpriteRenderer",
+					"Address" : 14356488,
+					"Enabled" : true,
+					"Sprite" : "Sprites/Clone_Fire",
+					"Animation" : "",
+					"Speed" : 1.000000,
+					"Time" : 0.000000,
+					"Play" : false
+				}
+			],
+			"Children" : null
+		}
+	]
+}
