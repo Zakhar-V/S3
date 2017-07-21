@@ -239,9 +239,10 @@ Entity* Entity::FindChild(const String& _name, bool _recursive)
 	return nullptr;
 }
 //----------------------------------------------------------------------------//
-Entity* Entity::AddChild(void)
+Entity* Entity::AddChild(const String& _name)
 {
 	EntityPtr _child = new Entity;
+	_child->SetName(_name);
 	_child->SetParent(this, false);
 	return _child;
 }

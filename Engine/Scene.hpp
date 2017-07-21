@@ -165,7 +165,7 @@ public:
 	//!
 	Entity* FindChild(const String& _name, bool _recursive = true);
 	//!
-	Entity* AddChild(void);
+	Entity* AddChild(const String& _name = "");
 
 	//!
 	static void Destroy(Entity* _entity);
