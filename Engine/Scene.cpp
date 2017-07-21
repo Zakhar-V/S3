@@ -411,6 +411,7 @@ EntityPtr Entity::Clone(void)
 
 	_clone->SetTransform(GetTransform());
 	_clone->m_name = m_name;
+	_clone->m_prefab = m_prefab ? m_prefab : this;
 	// TODO: flags & layers
 
 	for (Component* i = m_component; i; i = i->m_nextComponent)
@@ -457,7 +458,22 @@ Json Entity::Serialize(void)
 		for (Entity* i = m_child; i; i = i->m_next)
 		{
 			if (i->IsSerializable())
-				_children.Push(i->Serialize());
+			{
+				if (i->m_prefab && !i->m_prefab->m_prefabName.empty())
+				{
+					Json _external;
+					_external["Prefab"] = i->m_prefab->m_prefabName;
+					_external["Enabled"] = i->m_enabled;
+					_external["Position"] = i->m_pos;
+					_external["Scale"] = i->m_scale;
+					_external["Angle"] = i->m_angle * Rad2Deg;
+					_children.Push(_external);
+				}
+				else
+				{
+					_children.Push(i->Serialize());
+				}
+			}
 		}
 	}
 
@@ -497,9 +513,25 @@ void Entity::Deserialize(const Json& _src, class ObjectSolver* _context)
 		{
 			const Json& _desc = _children[i];
 			//Entity* _child = AddChild(_desc["Type"].AsString().c_str());
-			Entity* _child = AddChild();
-			if (_child)
-				_child->Deserialize(_desc, _context);
+			const Json* _external = _desc.Find("Prefab");
+			if (_external)
+			{
+				Prefab* _prefab = gResources->GetResource<Prefab>(_external->AsString());
+				EntityPtr _child = _prefab->GetEntity()->Clone();
+
+				Transform _transform(_desc["Position"][0], _desc["Position"][1], _desc["Scale"], _desc["Angle"].AsFloat() * Deg2Rad);
+				_child->SetTransform(_transform);
+				_child->Enable(_desc["Enabled"]);
+				_child->SetParent(this, false);
+
+				//if (_context) _context->AddObject(_child, _prefab->GetEntity()->m_oldAddress);  // ???
+			}
+			else
+			{
+				Entity* _child = AddChild();
+				if (_child)
+					_child->Deserialize(_desc, _context);
+			}
 		}
 	}
 }
@@ -526,6 +558,8 @@ void Prefab::Load(const char* _filename)
 
 	if (!m_entity)
 		m_entity = new Entity;
+
+	m_entity->SetPrefabName(_filename);
 
 	Json _desc;
 	_desc.Load(gResources->MakePath(_filename, "json").c_str());

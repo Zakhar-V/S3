@@ -124,6 +124,15 @@ public:
 	const String& GetName(void) { return m_name; }
 
 	//!
+	void SetPrefabName(const String& _name) { m_prefabName = _name; }
+	//!
+	const String& GetPrefabName(void) { return m_prefabName; }
+	//!
+	void SetPrefab(Entity* _prefab) { m_prefab = _prefab; }
+	//!
+	Entity* GetPrefab(void) { return m_prefab; }
+
+	//!
 	Component* AddComponent(const char* _typename);
 	//!
 	template <class T> T* AddComponent(void) { return static_cast<T*>(AddComponent(T::TypeName)); }
@@ -216,6 +225,8 @@ protected:
 	void _UpdateTransform(void);
 
 	String m_name;
+	String m_prefabName;
+	EntityPtr m_prefab;
 
 	Scene* m_scene = nullptr;
 
