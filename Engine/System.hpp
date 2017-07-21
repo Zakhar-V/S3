@@ -18,6 +18,7 @@ struct SystemEvent
 		PostUpdate = StringUtils::ConstHash("SystemEvent::PostUpdate"),
 		Render = StringUtils::ConstHash("SystemEvent::Render"),
 		PostRender = StringUtils::ConstHash("SystemEvent::PostRender"),
+		DebugDraw = StringUtils::ConstHash("SystemEvent::DebugDraw"),
 		EndFrame = StringUtils::ConstHash("SystemEvent::EndFrame"),
 		
 		Stop = StringUtils::ConstHash("SystemEvent::Stop"),
